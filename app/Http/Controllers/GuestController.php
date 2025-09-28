@@ -10,7 +10,7 @@ class GuestController extends Controller
     {
         $daftarSurat = [
             [
-                'jenis_id' => 105,
+                'jenis_id' => 101,
                 'kode' => 'KTR-U',
                 'nama_jenis' => 'Surat Keterangan Usaha',
                 'syarat_json' => ['Fotokopi KTP', 'Fotokopi KK', 'Pengantar RT/RW'],
