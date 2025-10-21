@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function index()
     {
 
- // Asumsi file view ada di 'resources/views/auth/login-form.blade.php'
+ // Asumsi file view ada di 'resources/views/login-form.blade.php'
         return view('login-form');
     }
 
