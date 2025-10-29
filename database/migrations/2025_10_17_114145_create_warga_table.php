@@ -13,15 +13,22 @@ return new class extends Migration
     {
         Schema::create('warga', function (Blueprint $table) {
             $table->id('warga_id'); // PK
+            $table->foreignId('user_id')
+                  ->nullable()
+                  ->unique()
+                  ->constrained('users') // Mengacu pada tabel 'users'
+                  ->onDelete('set null');
             $table->string('no_ktp', 20)->unique(); // UNQ
             $table->string('nama', 150);
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->string('agama', 50)->nullable();
             $table->string('pekerjaan', 100)->nullable();
             $table->string('telp', 15)->nullable();
-            $table->string('email', 100)->nullable();
-            $table->timestamps();
+            $table->string('email', 100)->unique();
+            $table->string('password');
+         $table->timestamps();
             });
+
     }
 
     /**

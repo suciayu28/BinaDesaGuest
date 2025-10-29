@@ -1,126 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    {{-- MENGGUNAKAN ROUTE YANG TEPAT UNTUK DASHBOARD --}}
-    <title>Dashboard - Bina Desa | Portal Layanan Mandiri dan Administrasi Surat Desa</title>
-    <meta name="description" content="Portal Layanan Mandiri dan Administrasi Surat Desa.">
-    <meta name="keywords" content="Bina Desa, Layanan Mandiri, Surat Desa, Administrasi Desa">
-
-    {{-- ASSET LINKS --}}
-    <link href="{{ asset('assets-guest/img/favicon.png') }}" rel="icon">
-    <link href="{{ asset('assets-guest/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
-
-    {{-- GOOGLE FONTS (TETAP) --}}
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-    {{-- CSS VENDOR --}}
-    <link href="{{asset('assets-guest/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-    <link href="{{asset('assets-guest/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
-    <link href="{{asset('assets-guest/vendor/aos/aos.css')}}" rel="stylesheet">
-    <link href="{{asset('assets-guest/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
-
-    {{-- MAIN CSS --}}
-    <link href="{{ asset('assets-guest/css/main.css') }}" rel="stylesheet">
-
-    {{-- INLINE STYLE (Disarankan dipindahkan ke assets-guest/css/custom.css jika sudah stabil) --}}
-    <style>
-        /* Header Social Links - Tambahkan jarak minimal di antara ikon */
-        .header-social-links a {
-            margin-left: 15px;
-        }
-
-        /* Footer Social Links - Tambahkan jarak minimal di antara ikon */
-        .footer .social-links a {
-            margin-right: 15px; /* Jarak antara ikon di footer */
-        }
-
-        /* Custom Hero for better visibility, keeping the structure */
-        .blog-hero-content {
-            /* Tambahkan background agar teks lebih terbaca di atas gambar */
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .blog-hero-content h1, .blog-hero-content .category {
-            color: white !important;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-        }
-
-        /* START: Custom Styling for Quick Request Section */
-        .quick-request-section {
-            background-color: #f4f7fa; /* Light Gray - to make it stand out */
-            padding: 80px 0;
-        }
-        .quick-request-card {
-            border-left: 5px solid #ffc107; /* Yellow accent line */
-        }
-        /* END: Custom Styling for Quick Request Section */
-    </style>
-
-</head>
-
-<body class="index-page">
-
-    <header id="header" class="header d-flex align-items-center position-relative">
-        <div class="container position-relative d-flex align-items-center justify-content-between">
-
-            {{-- LINK HOME: Menggunakan route('guest.dashboard') --}}
-            <a href="{{ route('guest.dashboard') }}" class="logo d-flex align-items-center me-auto me-xl-0">
-                <h1 class="sitename">Bina Desa</h1>
-            </a>
-
-            <nav id="navmenu" class="navmenu">
-                <ul>
-                    {{-- PERBAIKAN: Gunakan route() Layanan Mandiri Login, pastikan Anda menggunakan nama route yang benar di routes/web.php --}}
-                    <li><a href="{{ route('guest.layanan_mandiri.login') }}" class="active">Layanan Mandiri</a></li>
-
-                    {{-- ROUTE JENIS SURAT --}}
-                    <li><a href="{{ route('jenis-surat.index') }}">Jenis Surat</a></li>
-
-                    {{-- PERBAIKAN: Mengganti # dengan route yang akan digunakan di masa depan, atau tetap # --}}
-                    <li><a href="#permohonan">Permohonan Surat</a></li>
-                    <li><a href="#berkas">Berkas Persyaratan</a></li>
-                    <li><a href="#status">Riwayat Status Surat</a></li>
-                </ul>
-                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-            </nav>
-
-            <div class="header-social-links">
-                <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-            </div>
-
-        </div>
-    </header>
-
+@extends('layouts.dashboard.app')
+@section('content')
+    {{-- START MAIN CONTENT --}}
     <main class="main">
+        {{-- Area Flash Messages (Login Success, Logout Warning, dll) --}}
+        <div class="container mt-4">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    {!! session('success') !!}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (session('warning'))
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i> {{ session('warning') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+        </div>
 
+        {{-- Hero Slider Section --}}
         <section id="blog-hero" class="blog-hero section">
-
             <div class="container-fluid p-0" data-aos="fade">
-
                 <div class="blog-hero-slider swiper init-swiper">
                     <script type="application/json" class="swiper-config">
                         {
                             "loop": true,
                             "speed": 1000,
                             "effect": "fade",
-                            "autoplay": {
-                                "delay": 5000
-                            },
+                            "autoplay": { "delay": 5000 },
                             "slidesPerView": 1,
-                            "navigation": {
-                                "nextEl": ".swiper-button-next",
-                                "prevEl": ".swiper-button-prev"
-                            }
+                            "navigation": { "nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev" }
                         }
                     </script>
 
@@ -130,13 +40,11 @@
                             <div class="blog-hero-item">
                                 <img src="{{ asset('assets-guest/img/dashboard/dashboard1.jpg') }}" alt="Blog Hero Image" class="img-fluid">
                                 <div class="blog-hero-content">
-                                    <span class="category">LAYANAN SURAT</span>
+                                    <span class="category">LAYANAN PUBLIK</span>
                                     <h1>Ajukan Surat Keterangan Usaha (SKU) dengan Cepat dan Mudah</h1>
                                     <div class="meta">
                                         <span class="author">BY <a href="#">Tim Admin Desa</a></span>
                                         <span class="date">Hari Ini</span>
-                                        <span class="read-time">3 Menit</span>
-                                        <span class="views">2.5k views</span>
                                     </div>
                                     <a href="#permohonan" class="read-more">Ajukan Sekarang <i class="bi bi-arrow-right"></i></a>
                                 </div>
@@ -152,11 +60,8 @@
                                     <div class="meta">
                                         <span class="author">BY <a href="#">Tim Admin Desa</a></span>
                                         <span class="date">Kemarin</span>
-                                        <span class="read-time">4 Menit</span>
-                                        <span class="views">2.3k views</span>
                                     </div>
-                                    {{-- PERBAIKAN UTAMA: Arahkan ke Login Layanan Mandiri --}}
-                                    <a href="{{ route('guest.layanan_mandiri.login') }}" class="read-more">Login Layanan Mandiri <i class="bi bi-arrow-right"></i></a>
+                                    <a href="{{ route('login.form') }}" class="read-more">Masuk Layanan Mandiri <i class="bi bi-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -170,8 +75,6 @@
                                     <div class="meta">
                                         <span class="author">BY <a href="#">Tim Admin Desa</a></span>
                                         <span class="date">2 Hari Lalu</span>
-                                        <span class="read-time">5 Menit</span>
-                                        <span class="views">3.1k views</span>
                                     </div>
                                     <a href="#berkas" class="read-more">Cek Persyaratan <i class="bi bi-arrow-right"></i></a>
                                 </div>
@@ -187,8 +90,6 @@
                                     <div class="meta">
                                         <span class="author">BY <a href="#">Tim Admin Desa</a></span>
                                         <span class="date">3 Hari Lalu</span>
-                                        <span class="read-time">4 Menit</span>
-                                        <span class="views">2.7k views</span>
                                     </div>
                                     <a href="#status" class="read-more">Lacak Status Surat <i class="bi bi-arrow-right"></i></a>
                                 </div>
@@ -204,8 +105,6 @@
                                     <div class="meta">
                                         <span class="author">BY <a href="#">Tim Admin Desa</a></span>
                                         <span class="date">5 Hari Lalu</span>
-                                        <span class="read-time">3 Menit</span>
-                                        <span class="views">2.5k views</span>
                                     </div>
                                     <a href="blog-details.html" class="read-more">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
                                 </div>
@@ -217,12 +116,10 @@
                     <div class="swiper-button-next"></div>
 
                 </div>
-
             </div>
-
         </section>
 
-        {{-- BAGIAN QUICK ACCESS LAYANAN --}}
+        {{-- BAGIAN QUICK ACCESS LAYANAN (Main Content Widgets) --}}
         <section id="category-section" class="category-section section">
 
             <div class="container section-title" data-aos="fade-up">
@@ -233,7 +130,7 @@
             <div class="container" data-aos="fade-up" data-aos-delay="100">
 
                 <div class="row gy-4 mb-5 justify-content-center">
-                    {{-- KOTAK AJUKAN PERMOHONAN SURAT --}}
+                    {{-- KOTAK AJUKAN PERMOHONAN SURAT (KONDISIONAL) --}}
                     <div class="col-lg-8">
                         <article class="hero-post p-4 shadow" data-aos="zoom-out" data-aos-delay="200" style="border-radius: 8px; background-color: #f8f9fa;">
                             <div class="row align-items-center">
@@ -248,9 +145,18 @@
                                         <p class="post-excerpt">
                                             Mulai pengajuan surat keterangan, domisili, atau surat lainnya dari mana saja dan kapan saja.
                                         </p>
-                                        <a href="#permohonan" class="btn btn-primary mt-2">
-                                            Mulai Ajukan Surat <i class="bi bi-arrow-right"></i>
-                                        </a>
+
+                                        {{-- TOMBOL PENGAJUAN KONDISIONAL --}}
+                                        @if(Auth::check())
+                                            <a href="{{ route('permohonan.create') }}" class="btn btn-success mt-2">
+                                                Lanjutkan Pengajuan <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('login.form') }}" class="btn btn-warning mt-2">
+                                                <i class="bi bi-box-arrow-in-right me-1"></i> Login untuk Mengajukan
+                                            </a>
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>
@@ -313,105 +219,36 @@
                         </article>
                     </div>
 
-                    {{-- KOTAK LAYANAN MANDIRI (LOGIN) --}}
+                    {{-- KOTAK LAYANAN MANDIRI (LOGIN KONDISIONAL) --}}
                     <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
                         <article class="grid-post p-3 shadow-sm h-100" style="border-radius: 8px; background-color: #ffffff;">
                             <div class="d-flex align-items-center">
-                                <i class="bi bi-person-lock display-6 text-danger me-3"></i>
+                                <i class="bi bi-person-lock display-6 {{ Auth::check() ? 'text-success' : 'text-danger' }} me-3"></i>
                                 <div>
                                     <h5 class="title mb-1">
-                                        {{-- PERBAIKAN UTAMA: Arahkan ke Login Layanan Mandiri --}}
-                                        <a href="{{ route('guest.layanan_mandiri.login') }}">Layanan Mandiri (Login)</a>
+                                        @if(Auth::check())
+                                            <a href="{{ route('permohonan.index') }}" class="text-success">Data & Riwayat Saya</a>
+                                        @else
+                                            <a href="{{ route('login.form') }}" class="text-danger">Layanan Mandiri</a>
+                                        @endif
                                     </h5>
-                                    <p class="text-muted small mb-0">Akses data keluarga dan kependudukan.</p>
-                                    {{-- PERBAIKAN UTAMA: Arahkan ke Login Layanan Mandiri --}}
-                                    <a href="{{ route('guest.layanan_mandiri.login') }}" class="stretched-link"></a>
+                                    <p class="text-muted small mb-0">
+                                        @if(Auth::check())
+                                            Kelola riwayat permohonan Anda.
+                                        @else
+                                            Akses data kependudukan pribadi Anda.
+                                        @endif
+                                    </p>
+                                    <a href="{{ Auth::check() ? route('permohonan.index') : route('login.form') }}" class="stretched-link"></a>
                                 </div>
                             </div>
                         </article>
                     </div>
                 </div>
-
             </div>
-
         </section>
-
     </main>
+    {{-- END MAIN CONTENT --}}
+@endsection
 
-    <footer id="footer" class="footer position-relative">
 
-        <div class="container footer-top">
-            <div class="row gy-4">
-                <div class="col-lg-5 col-md-12 footer-about">
-                    {{-- LINK HOME: Menggunakan route('guest.dashboard') --}}
-                    <a href="{{ route('guest.dashboard') }}" class="logo d-flex align-items-center">
-                        <span class="sitename">Bina Desa</span>
-                    </a>
-                    <p>Portal Layanan Mandiri dan Administrasi Surat Desa. Membantu masyarakat mengurus keperluan administrasi secara cepat, transparan, dan terintegrasi secara digital.</p>
-                    <div class="social-links d-flex mt-4">
-                        <a href="#"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-3 footer-links">
-                    <h4>Navigasi Cepat</h4>
-                    <ul>
-                        {{-- LINK HOME: Menggunakan route('guest.dashboard') --}}
-                        <li><a href="{{ route('guest.dashboard') }}">Home</a></li>
-                        {{-- PERBAIKAN UTAMA: Arahkan ke Login Layanan Mandiri --}}
-                        <li><a href="{{ route('guest.layanan_mandiri.login') }}">Layanan Mandiri</a></li>
-                        <li><a href="#permohonan">Permohonan Surat</a></li>
-                        <li><a href="#status">Lacak Status Surat</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-2 col-md-3 footer-links">
-                    <h4>Informasi</h4>
-                    <ul>
-                        <li><a href="#">Berita Desa</a></li>
-                        <li><a href="#berkas">Berkas Persyaratan</a></li>
-                        <li><a href="{{ route('jenis-surat.index') }}">Jenis Surat</a></li>
-                        <li><a href="#">Struktur Organisasi</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-3 col-md-4 footer-contact">
-                    <h4>Hubungi Kami</h4>
-                    <p>Kantor Kepala Desa</p>
-                    <p>Jl. Utama Desa No. 10</p>
-                    <p>Kode Pos 535022</p>
-                    <p class="mt-4"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-                    <p><strong>Email:</strong> <span>info@binadesa.go.id</span></p>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="container copyright text-center">
-            <p>© <span>Copyright</span><strong class="px-1 sitename">Bina Desa</strong><span>All Rights Reserved</span></p>
-            <div class="credits">
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-            </div>
-        </div>
-
-    </footer>
-
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-    <div id="preloader"></div>
-
-    {{-- JAVASCRIPT ASSET LINKS --}}
-    <script src="{{ asset('assets-guest/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets-guest/vendor/php-email-form/validate.js') }}"></script>
-    <script src="{{ asset('assets-guest/vendor/aos/aos.js') }}"></script>
-    <script src="{{ asset('assets-guest/vendor/swiper/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets-guest/vendor/waypoints/noframework.waypoints.js') }}"></script>
-
-    <script src="{{ asset('assets-guest/js/main.js') }}"></script>
-
-</body>
-
-</html>

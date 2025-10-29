@@ -3,17 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+// Tambahkan import jika Model User berada di namespace lain (misal: use App\Models\User;)
+use App\Models\User;
 
 class Warga extends Model
 {
-  protected $table = 'warga';
+    protected $table = 'warga';
     protected $primaryKey = 'warga_id';
-    public $incrementing = true; // Asumsi ID di-generate oleh DB
+    public $incrementing = true;
+
+    // TAMBAHKAN 'user_id' di sini
     protected $fillable = [
-        'no_ktp', 'nama', 'jenis_kelamin', 'agama', 'pekerjaan', 'telp', 'email','password'
+        'user_id', 'no_ktp', 'nama', 'jenis_kelamin', 'agama', 'pekerjaan', 'telp', 'email','password'
     ];
-    // Sembunyikan password saat diubah menjadi array atau JSON
+
     protected $hidden = [
         'password',
     ];
+
+    // Casting email_verified_at TIDAK diperlukan jika kolom tersebut tidak ada di tabel warga
+    // Jika Anda memang memilikinya, pertahankan. Jika tidak, hapus.
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function user()
+    {
+        // Relasi sudah benar: belongsTo(Target Model, Foreign Key di model ini, Local Key di target model)
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

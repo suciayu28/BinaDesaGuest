@@ -2,94 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 🔹 Tampilkan halaman login (Guest)
      */
-    public function index()
+    public function showLoginForm()
     {
-
- // Asumsi file view ada di 'resources/views/login-form.blade.php'
         return view('login-form');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 🔹 Proses login dengan validasi email & password
      */
     public function login(Request $request)
     {
-          // 1. Validasi
-        $request->validate([
-            'username' => 'required',
+        // 1️⃣ VALIDASI INPUT
+        $validated = $request->validate([
+            'email' => 'required|email',
             'password' => [
                 'required',
-                'min:3', // Minimal 3 karakter
-                'regex:/[A-Z]/', // Harus mengandung huruf kapital
+                'min:3',
+                'regex:/[A-Z]/', // Minimal 1 huruf kapital - Aturan ini tetap dipertahankan
             ],
         ], [
-            'username.required' => 'Nama pengguna (username) wajib diisi.',
-            'password.required' => 'Kata sandi (password) wajib diisi.',
-            'password.min' => 'Kata sandi minimal 3 karakter.',
-            'password.regex' => 'Kata sandi harus mengandung minimal satu huruf kapital.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 3 karakter.',
+            'password.regex' => 'Password harus mengandung minimal satu huruf kapital.',
         ]);
 
-        // 2. Logika Khusus: 'Username' dan 'Password' harus memiliki value yang SAMA
-        $username = $request->input('username');
-        $password = $request->input('password');
+        $email = $validated['email'];
+        $password = $validated['password'];
 
-        if ($username !== $password) {
-             return redirect('/auth')->withErrors(['gagal' => 'Login Gagal! Username dan Password harus memiliki nilai yang sama.']);
+        $user = User::where('email', $email)->first();
+
+        // 2️⃣ LOGIKA VERIFIKASI STANDAR LARAVEL (TANPA KEWAJIBAN EMAIL = PASSWORD)
+        // Cek: 1. Apakah user ditemukan? DAN 2. Apakah password input cocok dengan hash di DB?
+        if ($user && Hash::check($password, $user->password)) {
+
+            // 3️⃣ LOGIN BERHASIL
+            // Pastikan Anda memanggil Auth::login($user) jika ingin menggunakan middleware 'auth' standar
+            // Jika Anda menggunakan sesi manual seperti di bawah, kode ini akan berfungsi:
+            $request->session()->regenerate();
+
+            // SET SESSION MANUAL
+            Session::put('isLoggedIn', true);
+            Session::put('user_email', $email);
+            Session::put('email', $email);
+
+            // 🔹 Ambil URL intended, jika ada
+            $redirectUrl = Session::pull('url.intended', route('guest.dashboard'));
+
+            return redirect($redirectUrl)
+                ->with('success', "Login berhasil! Selamat datang, {$email}.");
         }
 
-        // 3. Logika Berhasil
-        $pesan = "Login Berhasil! Selamat datang, **{$username}**. Semua rule berhasil dilalui.";
-
-
-        return view('dashboard', compact('pesan'));  //alihkan ke halaman dasboard
-    }
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        // 4️⃣ LOGIN GAGAL
+        // Ganti pesan kesalahan menjadi standar
+        return redirect()->route('login.form')
+            ->withErrors(['gagal' => 'Login gagal! Kredensial tidak cocok (Email atau Password salah).'])
+            ->withInput();
     }
 
     /**
-     * Display the specified resource.
+     * 🔹 Logout user
      */
-    public function show(string $id)
+    public function logout()
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // Sebaiknya gunakan Auth::logout() jika menggunakan Auth bawaan
+        Session::flush();
+        return redirect()->route('login.form')
+            ->with('success', 'Logout berhasil! Anda telah keluar dari sistem.');
     }
 }

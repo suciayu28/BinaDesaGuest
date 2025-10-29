@@ -1,152 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Halaman Login | Layanan Desa</title>
-    <style>
-        /* BASE & LAYOUT */
-        body {
-            font-family: 'Poppins', sans-serif; /* Menggunakan font modern */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Layanan Mandiri</title>
 
-            /* Latar Belakang Pemandangan Desa/Alam */
-            background-image: url('https://picsum.photos/1920/1080?random=1'); /* Ganti dengan URL gambar desa Anda */
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        /* OVERLAY (untuk meningkatkan kontras dan efek blur) */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            /* Efek overlay gelap lembut untuk menonjolkan form */
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px); /* Efek BLUR pada latar belakang */
-            z-index: 1;
-        }
-
-        /* LOGIN CONTAINER (Kartu Kaca/Glassmorphism Ringan) */
-        .login-container {
-            background: rgba(255, 255, 255, 0.95); /* Sedikit transparan */
-            padding: 50px 40px; /* Padding lebih besar */
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* Bayangan yang menonjol */
-            width: 400px;
-            max-width: 90%;
-            z-index: 2; /* Di atas overlay */
-            transition: all 0.4s ease-in-out;
-            border-left: 5px solid #007bff; /* Garis aksen biru yang menarik */
-        }
-        .login-container:hover {
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            transform: translateY(-5px);
-        }
-
-        /* HEADER */
-        h2 {
-            text-align: center;
-            color: #007bff; /* Warna biru untuk branding */
-            margin-bottom: 35px;
-            font-weight: 700;
-            font-size: 1.8em;
-            letter-spacing: 0.5px;
-        }
-
-        /* INPUT FIELD */
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #495057; /* Abu-abu gelap */
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 25px;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
-            background-color: #f8f9fa; /* Latar input sedikit abu-abu */
-        }
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25); /* Efek fokus biru */
-        }
-
-        /* BUTTON (Warna Biru Kontras) */
-        button {
-            background-color: #007bff; /* Biru Primer yang Kuat */
-            color: white;
-            padding: 16px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3; /* Biru lebih gelap saat hover */
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
-        }
-
-        /* ALERT/ERROR */
-        .alert {
-            padding: 15px;
-            margin-bottom: 25px;
-            border: 1px solid #dc3545; /* Merah untuk batas */
-            border-radius: 8px;
-            color: #721c24;
-            background-color: #f8d7da;
-            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.1);
-        }
-        .alert ul { margin: 0; padding-left: 20px; }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-    <div class="login-container">
-        <h2>Layanan Mandiri & Surat</h2>
-        <p style="text-align: center; color: #6c757d; margin-top: -20px; margin-bottom: 30px;">
-            Akses cepat ke semua layanan publik desa Anda.
-        </p>
+<body class="bg-light">
 
-        @if ($errors->any())
-            <div class="alert">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                    @if (session('gagal'))
-                        <li>{{ session('gagal') }}</li>
-                    @endif
-                </ul>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 p-4">
+                <h3 class="text-center mb-4">Login Layanan Mandiri</h3>
+
+                {{-- ✅ SUCCESS MESSAGE --}}
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill"></i> {!! session('success') !!}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                {{-- ✅ ERROR MESSAGE --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $err)
+                                <li>{{ $err }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                {{-- ✅ FORM LOGIN --}}
+                <form action="{{ route('login.process') }}" method="POST">
+                    @csrf
+
+                    {{-- Email --}}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Warga</label>
+                        <input type="email"
+                               name="email"
+                               id="email"
+                               class="form-control @error('email') is-invalid @enderror"
+                               value="{{ old('email') }}"
+                               placeholder="Masukkan email yang terdaftar"
+                               required>
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password"
+                               name="password"
+                               id="password"
+                               class="form-control @error('password') is-invalid @enderror"
+                               placeholder="Masukkan password Anda"
+                               required>
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">Gunakan password sesuai data Anda di sistem desa.</div>
+                    </div>
+
+                    {{-- Tombol --}}
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Login Sekarang
+                        </button>
+                    </div>
+                </form>
+
+                <p class="text-center text-muted mt-3 small">
+                    <a href="{{ route('guest.dashboard') }}" class="text-muted text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i> Kembali ke Beranda
+                    </a>
+                </p>
+
+                <p class="text-center text-muted mt-2 small">
+                    Belum punya akun? Hubungi admin desa.
+                </p>
             </div>
-        @endif
-
-        <form method="POST" action="{{ route('login.process') }}">
-            @csrf
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Masukkan username Anda" value="{{ old('username') }}">
-
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Min 3 kar., ada huruf kapital" autocomplete="off">
-
-            <button type="submit">LOGIN SEKARANG</button>
-        </form>
+        </div>
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

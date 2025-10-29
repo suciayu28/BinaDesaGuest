@@ -4,20 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Warga;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class WargaController extends Controller
 {
     /**
-     * READ: Menampilkan semua data warga
+     * Menampilkan daftar semua warga.
      */
     public function index()
     {
-        $wargas = Warga::latest()->paginate(10);
+        $wargas = Warga::orderBy('nama')->paginate(10);
         return view('warga.index', compact('wargas'));
     }
 
     /**
-     * CREATE: Menampilkan form tambah data warga
+     * Menampilkan form untuk membuat warga baru.
      */
     public function create()
     {
@@ -25,65 +27,81 @@ class WargaController extends Controller
     }
 
     /**
-     * STORE: Menyimpan data warga baru
+     * Menyimpan data warga baru ke database.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'no_ktp' => 'required|unique:warga|max:30',
-            'nama' => 'required|max:255',
+        $validated = $request->validate([
+            'no_ktp' => ['required', 'string', 'max:20', 'unique:warga,no_ktp'],
+            'nama' => ['required', 'string', 'max:255'],
+            'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+            'agama' => ['required', 'string', 'max:50'],
+            'pekerjaan' => ['nullable', 'string', 'max:255'],
+            'telp' => ['nullable', 'string', 'max:20'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:warga,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // Masukkan data ke array sebelum create
-        $data['no_ktp'] = $request->no_ktp;
-        $data['nama'] = $request->nama;
+        // Hash password sebelum disimpan
+        $validated['password'] = Hash::make($validated['password']);
 
-        Warga::create($data);
+        Warga::create($validated);
 
-        return redirect()->route('warga.index')->with('success', 'Data Warga berhasil disimpan!');
+        return redirect()->route('warga.index')
+            ->with('success', 'Data Warga **' . $validated['nama'] . '** berhasil ditambahkan.');
     }
 
     /**
-     * SHOW: Menampilkan detail 1 warga
-     */
-    public function show(Warga $warga)
-    {
-        return view('warga.show', compact('warga'));
-    }
-
-    /**
-     * EDIT: Menampilkan form edit warga
+     * Menampilkan form untuk mengedit data warga.
      */
     public function edit(Warga $warga)
     {
+        // Parameter 'warga' otomatis di-resolve oleh Laravel (Route Model Binding)
         return view('warga.edit', compact('warga'));
     }
 
     /**
-     * UPDATE: Memperbarui data warga
+     * Memperbarui data warga yang sudah ada.
      */
     public function update(Request $request, Warga $warga)
     {
-        $request->validate([
-            'no_ktp' => 'required|max:30|unique:warga,no_ktp,' . $warga->warga_id . ',warga_id',
-            'nama' => 'required|max:255',
+        $validated = $request->validate([
+            // no_ktp harus unik, kecuali untuk data warga saat ini
+            'no_ktp' => ['required', 'string', 'max:20', Rule::unique('warga', 'no_ktp')->ignore($warga->warga_id, 'warga_id')],
+            'nama' => ['required', 'string', 'max:255'],
+            'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+            'agama' => ['required', 'string', 'max:50'],
+            'pekerjaan' => ['nullable', 'string', 'max:255'],
+            'telp' => ['nullable', 'string', 'max:20'],
+            // email harus unik, kecuali untuk data warga saat ini
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('warga', 'email')->ignore($warga->warga_id, 'warga_id')],
+            // password hanya diwajibkan jika diisi
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // Masukkan data ke array sebelum update
-        $data['no_ktp'] = $request->no_ktp;
-        $data['nama'] = $request->nama;
+        if (!empty($validated['password'])) {
+            // Hash password baru jika diisi
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            // Jika password kosong, hapus dari data yang divalidasi agar tidak menimpa password lama
+            unset($validated['password']);
+        }
 
-        $warga->update($data);
+        $warga->update($validated);
 
-        return redirect()->route('warga.index')->with('success', 'Data Warga berhasil diperbarui!');
+        return redirect()->route('warga.index')
+            ->with('success', 'Data Warga **' . $validated['nama'] . '** berhasil diperbarui.');
     }
 
     /**
-     * DELETE: Menghapus data warga
+     * Menghapus data warga.
      */
     public function destroy(Warga $warga)
     {
+        $nama = $warga->nama;
         $warga->delete();
-        return redirect()->route('warga.index')->with('success', 'Data Warga berhasil dihapus!');
+
+        return redirect()->route('warga.index')
+            ->with('success', 'Data Warga **' . $nama . '** berhasil dihapus.');
     }
 }
