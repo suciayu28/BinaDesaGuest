@@ -9,6 +9,7 @@
             {{-- Navigasi Utama --}}
             <nav id="navmenu" class="navmenu">
                 <ul>
+                    
                     <li><a href="{{ route('guest.dashboard') }}">Home</a></li>
                     <li><a href="{{ route('jenis-surat.index') }}">Jenis Surat</a></li>
 
@@ -20,6 +21,8 @@
                     </li>
                     <li><a href="#berkas">Berkas Persyaratan</a></li>
                     <li><a href="#status">Riwayat Status Surat</a></li>
+                    <li><a href="{{ route('users.index') }}">Data User</a></li>
+                    <li><a href="{{ route('warga.index') }}">Data Warga</a></li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>

@@ -69,8 +69,5 @@ Route::get('/dashboard/user', [DashboardController::class, 'index'])->name('dash
 //routes warga
 Route::resource('warga', WargaController::class);
 
-Route::get('/save-intended', function (Request $request) {
-    \Illuminate\Support\Facades\Session::put('url.intended', $request->query('url'));
-    return response()->json(['status'=>'ok']);
-})->name('save.intended');
+
 

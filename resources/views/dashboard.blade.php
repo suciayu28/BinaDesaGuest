@@ -193,7 +193,7 @@
                     </article>
                 </div>
 
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
+                < class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
                     <article class="grid-post p-3 shadow-sm h-100" style="border-radius: 8px; background-color: #ffffff;">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-list-columns-reverse display-6 text-info me-3"></i>

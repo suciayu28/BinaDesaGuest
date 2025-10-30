@@ -8,7 +8,7 @@
             <h1 class="mb-4 text-start" style="color: var(--primary-color);">
                  <i class="fas fa-user-edit me-2"></i> Edit Pengguna
             </h1>
-            <h5 class="text-secondary mb-4">Anda sedang mengubah data: **{{ $user->name ?? 'User' }}**</h5>
+            <h5 class="text-secondary mb-4">Anda sedang mengubah data: {{ $user->name ?? 'User' }}</h5>
 
             @if(session('success'))
                 <div class="alert alert-success"><i class="fas fa-check-circle me-1"></i> {{ session('success') }}</div>
