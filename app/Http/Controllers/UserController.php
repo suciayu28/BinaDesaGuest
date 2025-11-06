@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('guest.user.index', compact('users'));
+        return view('pages.guest.user.index', compact('users'));
     }
 
     /**
@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('guest.user.create');
+        return view('pages.guest.user.create');
     }
 
     /**
@@ -46,7 +46,7 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
+        return redirect()->route('pages.guest.users.index')->with('success', 'User berhasil ditambahkan!');
     }
 
     /**
@@ -55,7 +55,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id); // temukan user berdasarkan ID atau gagal
-        return view('guest.user.edit', compact('user'));
+        return view('pages.guest.user.edit', compact('user'));
     }
 
     /**
@@ -82,7 +82,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
+        return redirect()->route('pages.guest.users.index')->with('success', 'User berhasil diperbarui!');
     }
 
     /**
@@ -93,6 +93,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
+        return redirect()->route('pages.guest.users.index')->with('success', 'User berhasil dihapus!');
     }
 }

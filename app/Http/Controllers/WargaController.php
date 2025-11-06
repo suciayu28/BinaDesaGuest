@@ -15,7 +15,7 @@ class WargaController extends Controller
     public function index()
     {
         $wargas = Warga::orderBy('nama')->paginate(10);
-        return view('warga.index', compact('wargas'));
+        return view('pages.guest.warga.index', compact('wargas'));
     }
 
     /**
@@ -23,7 +23,7 @@ class WargaController extends Controller
      */
     public function create()
     {
-        return view('warga.create');
+        return view('pages.guest.warga.create');
     }
 
     /**
@@ -47,7 +47,7 @@ class WargaController extends Controller
 
         Warga::create($validated);
 
-        return redirect()->route('warga.index')
+        return redirect()->route('pages.guest.warga.index')
             ->with('success', 'Data Warga **' . $validated['nama'] . '** berhasil ditambahkan.');
     }
 
@@ -57,7 +57,7 @@ class WargaController extends Controller
     public function edit(Warga $warga)
     {
         // Parameter 'warga' otomatis di-resolve oleh Laravel (Route Model Binding)
-        return view('warga.edit', compact('warga'));
+        return view('pages.guest.warga.edit', compact('warga'));
     }
 
     /**
@@ -89,7 +89,7 @@ class WargaController extends Controller
 
         $warga->update($validated);
 
-        return redirect()->route('warga.index')
+        return redirect()->route('pages.guest.warga.index')
             ->with('success', 'Data Warga **' . $validated['nama'] . '** berhasil diperbarui.');
     }
 
@@ -101,7 +101,7 @@ class WargaController extends Controller
         $nama = $warga->nama;
         $warga->delete();
 
-        return redirect()->route('warga.index')
+        return redirect()->route('pages.guest.warga.index')
             ->with('success', 'Data Warga **' . $nama . '** berhasil dihapus.');
     }
 }

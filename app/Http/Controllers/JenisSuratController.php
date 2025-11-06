@@ -11,7 +11,7 @@ class JenisSuratController extends Controller
     {
 
         $jenisSurats = JenisSurat::with('templates')->get();
-        return view('guest.jenis_surat', compact('jenisSurats'));
+        return view('pages.guest.jenis_surat', compact('jenisSurats'));
     }
 
 

@@ -12,9 +12,7 @@ use App\Http\Controllers\PermohonanSuratController;
 // ===================================================================
 // 1. ROUTE PUBLIK / LANDING PAGE
 // ===================================================================
-Route::get('/', function () {
-    return view('welcome');
-});
+;
 
 Route::get('/layanan-surat', [GuestController::class, 'layananSurat'])->name('layanan_surat');
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('guest.dashboard');
@@ -22,8 +20,8 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('guest
 // ===================================================================
 // 2. ROUTE AUTHENTICATION
 // ===================================================================
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
-Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ===================================================================
@@ -34,16 +32,9 @@ Route::get('/jenis-surat', [JenisSuratController::class, 'index'])->name('jenis-
 // ===================================================================
 // 4. ROUTE PERMOHONAN SURAT (Publik - nanti bisa ditambah proteksi login)
 // ===================================================================
-Route::get('/permohonan/create/{jenis_surat_id}', [PermohonanSuratController::class, 'create'])
-->name('permohonan.create');
-// Route untuk menampilkan daftar riwayat permohonan
-Route::get('/permohonan/riwayat', [PermohonanSuratController::class, 'index'])
-->name('permohonan.index');
-// Rute untuk memproses pengajuan (STORE)
-Route::post('/permohonan/store', [PermohonanSuratController::class, 'store'])
-->name('permohonan.store');
-Route::get('/permohonan/{id}', [PermohonanSuratController::class, 'show'])
-->name('permohonan.show');
+Route::resource('permohonan', PermohonanSuratController::class);
+Route::get('/permohonan/riwayat', [PermohonanSuratController::class, 'riwayat'])
+    ->name('permohonan.riwayat');
 // 5. ROUTE USER (Admin nanti)
 // ===================================================================
 

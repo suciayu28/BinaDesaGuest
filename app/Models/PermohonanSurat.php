@@ -55,4 +55,8 @@ class PermohonanSurat extends Model implements HasMedia
         // Model Warga dipanggil tanpa namespace karena berada di App\Models
         return $this->belongsTo(Warga::class, 'pemohon_warga_id', 'warga_id');
     }
+    public function warga()
+    {
+        return $this->belongsTo(Warga::class, 'pemohon_warga_id', 'warga_id');
+    }
 }
