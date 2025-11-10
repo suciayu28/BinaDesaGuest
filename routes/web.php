@@ -12,9 +12,6 @@ use App\Http\Controllers\PermohonanSuratController;
 // ===================================================================
 // 1. ROUTE PUBLIK / LANDING PAGE
 // ===================================================================
-;
-
-Route::get('/layanan-surat', [GuestController::class, 'layananSurat'])->name('layanan_surat');
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('guest.dashboard');
 
 // ===================================================================
@@ -38,27 +35,10 @@ Route::get('/permohonan/riwayat', [PermohonanSuratController::class, 'riwayat'])
 // 5. ROUTE USER (Admin nanti)
 // ===================================================================
 
-// Daftar user
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-
-// Form tambah user
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-
-// Simpan user baru
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
-
-// Form edit user
-Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-
-// Update user
-Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-
-// Hapus user
-Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-Route::get('/dashboard/user', [DashboardController::class, 'index'])->name('dashboard');
-
 //routes warga
 Route::resource('warga', WargaController::class);
+
+Route::resource('users', UserController::class);
 
 
 

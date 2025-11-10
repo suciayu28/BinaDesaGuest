@@ -48,7 +48,7 @@ class WargaController extends Controller
         Warga::create($validated);
 
         return redirect()->route('pages.guest.warga.index')
-            ->with('success', 'Data Warga **' . $validated['nama'] . '** berhasil ditambahkan.');
+            ->with('success', 'Data Warga ' . $validated['nama'] . ' berhasil ditambahkan.');
     }
 
     /**
@@ -89,8 +89,8 @@ class WargaController extends Controller
 
         $warga->update($validated);
 
-        return redirect()->route('pages.guest.warga.index')
-            ->with('success', 'Data Warga **' . $validated['nama'] . '** berhasil diperbarui.');
+        return redirect()->route('warga.index')
+            ->with('success', 'Data Warga ' . $validated['nama'] . ' berhasil diperbarui.');
     }
 
     /**
@@ -101,7 +101,7 @@ class WargaController extends Controller
         $nama = $warga->nama;
         $warga->delete();
 
-        return redirect()->route('pages.guest.warga.index')
-            ->with('success', 'Data Warga **' . $nama . '** berhasil dihapus.');
+        return redirect()->route('warga.index')
+            ->with('success', 'Data Warga ' . $nama . ' berhasil dihapus.');
     }
 }

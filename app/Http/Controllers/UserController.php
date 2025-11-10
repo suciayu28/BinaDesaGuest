@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('pages.guest.user.index', compact('users'));
+        return view('pages.guest.users.index', compact('users'));
     }
 
     /**
@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('pages.guest.user.create');
+        return view('pages.guest.users.create');
     }
 
     /**
@@ -30,14 +30,12 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed'
         ]);
 
-        // Siapkan data untuk disimpan
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -46,7 +44,7 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route('pages.guest.users.index')->with('success', 'User berhasil ditambahkan!');
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
     }
 
     /**
@@ -54,8 +52,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id); // temukan user berdasarkan ID atau gagal
-        return view('pages.guest.user.edit', compact('user'));
+        $user = User::findOrFail($id);
+        return view('pages.guest.users.edit', compact('user'));
     }
 
     /**
@@ -82,7 +80,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('pages.guest.users.index')->with('success', 'User berhasil diperbarui!');
+        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
     }
 
     /**
@@ -93,6 +91,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('pages.guest.users.index')->with('success', 'User berhasil dihapus!');
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
     }
 }

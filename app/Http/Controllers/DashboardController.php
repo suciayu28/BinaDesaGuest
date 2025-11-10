@@ -11,7 +11,7 @@ class DashboardController extends Controller
      */
     public function dashboard()
     {
-         return view('pages.auth.guest.dashboard');
+         return view('pages.guest.dashboard');
     }
 
     /**

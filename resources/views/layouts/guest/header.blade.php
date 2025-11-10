@@ -9,14 +9,13 @@
             {{-- Navigasi Utama --}}
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    
+
                     <li><a href="{{ route('guest.dashboard') }}">Home</a></li>
                     <li><a href="{{ route('jenis-surat.index') }}">Jenis Surat</a></li>
 
                     {{-- Tautan Permohonan Surat (Kondisional: Jika Login, langsung ke form / Jika Belum, ke Login) --}}
                     <li>
-                        <a href="{{ Auth::check() ? route('permohonan.create') : route('login.form') }}">
-                            Permohonan Surat
+                        <a href="{{ route('permohonan.index') }}">Permohonan Surat
                         </a>
                     </li>
                     <li><a href="#berkas">Berkas Persyaratan</a></li>

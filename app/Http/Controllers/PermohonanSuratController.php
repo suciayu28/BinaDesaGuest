@@ -14,21 +14,14 @@ class PermohonanSuratController extends Controller
     /**
      * Menampilkan daftar riwayat permohonan surat milik Warga yang sedang login.
      */
-    public function index()
-    {
-        $warga = Warga::where('user_id', Auth::id())->first();
+ public function index()
+{
+    $permohonans = PermohonanSurat::with('jenisSurat')
+        ->orderBy('tanggal_pengajuan', 'desc')
+        ->get();
 
-        if (!$warga) {
-            $permohonans = collect();
-        } else {
-            $permohonans = PermohonanSurat::where('pemohon_warga_id', $warga->warga_id)
-                ->with('jenisSurat')
-                ->orderBy('tanggal_pengajuan', 'desc')
-                ->get();
-        }
-
-        return view('pages.guest.permohonan.index', compact('permohonans'));
-    }
+    return view('pages.guest.permohonan.index', compact('permohonans'));
+}
 
     /**
      * Tampilkan formulir pengajuan permohonan surat baru.
