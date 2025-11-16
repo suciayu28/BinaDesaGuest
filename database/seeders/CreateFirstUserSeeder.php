@@ -13,7 +13,7 @@ class CreateFirstUserSeeder extends Seeder
         User::create([
             'name' => 'Guest',
             'email' => 'guest@gmail.com',
-            'password' => Hash::make('guest123'),
+            'password' => Hash::make('Guest123'),
         ]);
     }
 }
