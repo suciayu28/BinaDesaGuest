@@ -52,6 +52,12 @@
         color: white !important;
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
     }
+    .form-control,
+    .form-select,
+    .btn {
+        height: 45px;
+    }
+    
 </style>
 {{-- Floating WhatsApp Button --}}
 <a href="https://wa.me/08877573317?text=Halo%20Admin,%20saya%20butuh%20bantuan." class="whatsapp-float" target="_blank"
@@ -84,4 +90,6 @@
         background-color: #20ba5a;
         transform: scale(1.1);
     }
+
 </style>
+

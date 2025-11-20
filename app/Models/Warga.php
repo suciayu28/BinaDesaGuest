@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-// Tambahkan import jika Model User berada di namespace lain (misal: use App\Models\User;)
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
 
 class Warga extends Model
@@ -14,7 +14,15 @@ class Warga extends Model
 
     // TAMBAHKAN 'user_id' di sini
     protected $fillable = [
-        'user_id', 'no_ktp', 'nama', 'jenis_kelamin', 'agama', 'pekerjaan', 'telp', 'email','password'
+        'user_id',
+        'no_ktp',
+        'nama',
+        'jenis_kelamin',
+        'agama',
+        'pekerjaan',
+        'telp',
+        'email',
+        'password'
     ];
 
     protected $hidden = [
@@ -31,5 +39,14 @@ class Warga extends Model
     {
         // Relasi sudah benar: belongsTo(Target Model, Foreign Key di model ini, Local Key di target model)
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+    {
+        foreach ($filterableColumns as $column) {
+            if ($request->filled($column)) {
+                $query->where($column, $request->input($column));
+            }
+        }
+        return $query;
     }
 }

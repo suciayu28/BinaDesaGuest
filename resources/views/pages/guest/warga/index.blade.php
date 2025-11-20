@@ -44,6 +44,44 @@
                                 <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
                             </div>
                         @endif
+                        {{-- === FILTER & SEARCH === --}}
+                        <form method="GET" action="{{ route('warga.index') }}" class="mb-4">
+                            <div class="row g-3 align-items-center">
+
+                                {{-- Search Input --}}
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control"
+                                            value="{{ request('search') }}" placeholder="Search">
+
+                                        <button type="submit" class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {{-- Clear Button --}}
+                                <div class="col-md-2">
+                                    @if (request('search'))
+                                        <a href="{{ route('warga.index') }}" class="btn btn-outline-secondary w-800 btn-sm">
+                                            Clear
+                                        </a>
+                                    @endif
+                                </div>
+
+                                {{-- Dropdown Jenis Kelamin --}}
+                                <div class="col-md-3">
+                                    <select name="jenis_kelamin" class="form-select">
+                                        <option value="">All</option>
+                                        <option value="Laki-laki" {{ request('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>
+                                            Laki-laki</option>
+                                        <option value="Perempuan" {{ request('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>
+                                            Perempuan</option>
+                                    </select>
+                                </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
 
                         {{-- === CARD LIST ASLI DARI KODEMU === --}}
                         <div class="card shadow-sm">
@@ -56,42 +94,52 @@
                                                     <div class="d-flex align-items-center mb-3">
                                                         <div class="me-3 p-2 bg-light rounded-circle"
                                                             style="border: 2px solid var(--primary-color);">
-                                                            <i class="fas fa-user-tag fa-lg" style="color: var(--primary-color);"></i>
+                                                            <i class="fas fa-user-tag fa-lg"
+                                                                style="color: var(--primary-color);"></i>
                                                         </div>
                                                         <div>
-                                                            <h5 class="card-title mb-0 fw-bold text-truncate" title="{{ $warga->nama }}">
+                                                            <h5 class="card-title mb-0 fw-bold text-truncate"
+                                                                title="{{ $warga->nama }}">
                                                                 {{ $warga->nama }}</h5>
-                                                            <p class="text-muted small mb-0">No. Urut: {{ $wargas->firstItem() + $index }}</p>
+                                                            <p class="text-muted small mb-0">No. Urut:
+                                                                {{ $wargas->firstItem() + $index }}</p>
                                                         </div>
                                                     </div>
                                                     <hr>
 
                                                     <div class="warga-detail-item">
-                                                        <i class="fas fa-id-card"></i> <span>No. KTP: {{ $warga->no_ktp }}</span>
+                                                        <i class="fas fa-id-card"></i> <span>No. KTP:
+                                                            {{ $warga->no_ktp }}</span>
                                                     </div>
                                                     <div class="warga-detail-item">
-                                                        <i class="fas fa-venus-mars"></i> <span>Jenis Kelamin: {{ $warga->jenis_kelamin }}</span>
+                                                        <i class="fas fa-venus-mars"></i> <span>Jenis Kelamin:
+                                                            {{ $warga->jenis_kelamin }}</span>
                                                     </div>
                                                     <div class="warga-detail-item">
-                                                        <i class="fas fa-church"></i> <span>Agama: {{ $warga->agama }}</span>
+                                                        <i class="fas fa-church"></i> <span>Agama:
+                                                            {{ $warga->agama }}</span>
                                                     </div>
                                                     <div class="warga-detail-item">
-                                                        <i class="fas fa-briefcase"></i> <span>Pekerjaan: {{ $warga->pekerjaan }}</span>
+                                                        <i class="fas fa-briefcase"></i> <span>Pekerjaan:
+                                                            {{ $warga->pekerjaan }}</span>
                                                     </div>
                                                     <div class="warga-detail-item">
                                                         <i class="fas fa-phone"></i> <span>Telp: {{ $warga->telp }}</span>
                                                     </div>
                                                     <div class="warga-detail-item">
-                                                        <i class="fas fa-envelope"></i> <span>Email: {{ $warga->email }}</span>
+                                                        <i class="fas fa-envelope"></i> <span>Email:
+                                                            {{ $warga->email }}</span>
                                                     </div>
                                                 </div>
 
                                                 <div class="card-footer card-footer-actions d-flex justify-content-end">
-                                                    <a href="{{ route('warga.edit', $warga) }}" class="btn btn-sm btn-warning me-2" title="Edit">
+                                                    <a href="{{ route('warga.edit', $warga) }}"
+                                                        class="btn btn-sm btn-warning me-2" title="Edit">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
 
-                                                    <form action="{{ route('warga.destroy', $warga) }}" method="POST" style="display:inline;">
+                                                    <form action="{{ route('warga.destroy', $warga) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
