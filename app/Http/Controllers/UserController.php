@@ -11,19 +11,18 @@ class UserController extends Controller
     /**
      * Tampilkan semua data user
      */
-    public function index()
-    {
-        $users = User::all();
-        return view('pages.guest.users.index', compact('users'));
-    }
+    public function index(Request $request)
+{
 
-    /**
-     * Form tambah user
-     */
-    public function create()
-    {
-        return view('pages.guest.users.create');
-    }
+    $searchableColumns = ['name', 'email'];
+
+        $users = User::search($request, $searchableColumns)
+            ->paginate(10)
+            ->appends($request->query());
+
+
+    return view('pages.guest.users.index', compact('users'));
+}
 
     /**
      * Simpan user baru

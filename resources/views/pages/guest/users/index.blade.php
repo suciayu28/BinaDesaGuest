@@ -49,6 +49,32 @@
                                 <i class="fas fa-exclamation-triangle me-1"></i> {{ session('error') }}
                             </div>
                         @endif
+                        {{-- === FILTER & SEARCH USER === --}}
+                        <form method="GET" action="{{ route('users.index') }}" class="mb-4">
+                            <div class="row g-3 align-items-center">
+
+                                {{-- Search Input --}}
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control"
+                                            value="{{ request('search') }}" placeholder="Search">
+
+                                        <button type="submit" class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Clear Button --}}
+                                <div class="col-md-2">
+                                    @if (request('search'))
+                                        <a href="{{ route('users.index') }}" class="btn btn-outline-secondary w-800 btn-sm">
+                                            Clear
+                                        </a>
+                                    @endif
+                                </div>
+
+                        </form>
 
                         {{-- === CARD LIST (Tampilan Sama dengan Warga Index) === --}}
                         <div class="card shadow-sm">
@@ -61,13 +87,16 @@
                                                     <div class="d-flex align-items-center mb-3">
                                                         <div class="me-3 p-2 bg-light rounded-circle"
                                                             style="border: 2px solid var(--primary-color);">
-                                                            <i class="fas fa-user fa-lg" style="color: var(--primary-color);"></i>
+                                                            <i class="fas fa-user fa-lg"
+                                                                style="color: var(--primary-color);"></i>
                                                         </div>
                                                         <div>
-                                                            <h5 class="card-title mb-0 fw-bold text-truncate" title="{{ $user->name }}">
+                                                            <h5 class="card-title mb-0 fw-bold text-truncate"
+                                                                title="{{ $user->name }}">
                                                                 {{ $user->name }}
                                                             </h5>
-                                                            <p class="text-muted small mb-0">User ID: {{ $user->id }}</p>
+                                                            <p class="text-muted small mb-0">User ID: {{ $user->id }}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -93,11 +122,13 @@
                                                 </div>
 
                                                 <div class="card-footer card-footer-actions d-flex justify-content-end">
-                                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning me-2" title="Edit">
+                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                        class="btn btn-sm btn-warning me-2" title="Edit">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
 
-                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
+                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
@@ -116,6 +147,10 @@
                                             </div>
                                         </div>
                                     @endforelse
+                                    <div class="mt-4">
+                                        {{ $users->links('pagination::bootstrap-5') }}
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

@@ -14,18 +14,29 @@ class WargaController extends Controller
      */
     public function index(Request $request)
     {
-        $filterableColumns = ['gender'];
-        $searchableColums = ['nama','email,','no_ktp'];
-       $pageData['dataWarga'] = Warga::filter($request, $filterableColumns)
-        ->when($request->filled('search'), function ($query) use ($request) {
-            $keyword = $request->search;
-            $query->where(function ($q) use ($keyword) {
-                $q->where('nama', 'like', "%{$keyword}%")
-                  ->orWhere('email', 'like', "%{$keyword}%")
-                  ->orWhere('no_ktp', 'like', "%{$keyword}%");
-            });
-        })
-        ->paginate(10);
+        // MAP request 'gender' dari form → kolom database 'jenis_kelamin'
+        if ($request->filled('gender')) {
+            $request->merge([
+                'jenis_kelamin' => $request->gender
+            ]);
+        }
+        //kolom yang bisa difilter
+        $filterableColumns = ['jenis_kelamin'];
+        // Kolom yang bisa dicari
+        $searchableColums = ['nama', 'email', 'no_ktp'];
+
+        $pageData['dataWarga'] = Warga::filter($request, $filterableColumns)
+            ->when($request->filled('search'), function ($query) use ($request) {
+
+                $keyword = $request->search;
+
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%{$keyword}%")
+                      ->orWhere('email', 'like', "%{$keyword}%")
+                      ->orWhere('no_ktp', 'like', "%{$keyword}%");
+                });
+            })
+            ->paginate(10);
 
         $wargas = $pageData['dataWarga'];
         return view('pages.guest.warga.index', compact('wargas'));
@@ -69,7 +80,6 @@ class WargaController extends Controller
      */
     public function edit(Warga $warga)
     {
-        // Parameter 'warga' otomatis di-resolve oleh Laravel (Route Model Binding)
         return view('pages.guest.warga.edit', compact('warga'));
     }
 
@@ -79,24 +89,19 @@ class WargaController extends Controller
     public function update(Request $request, Warga $warga)
     {
         $validated = $request->validate([
-            // no_ktp harus unik, kecuali untuk data warga saat ini
             'no_ktp' => ['required', 'string', 'max:20', Rule::unique('warga', 'no_ktp')->ignore($warga->warga_id, 'warga_id')],
             'nama' => ['required', 'string', 'max:255'],
             'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
             'agama' => ['required', 'string', 'max:50'],
             'pekerjaan' => ['nullable', 'string', 'max:255'],
             'telp' => ['nullable', 'string', 'max:20'],
-            // email harus unik, kecuali untuk data warga saat ini
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('warga', 'email')->ignore($warga->warga_id, 'warga_id')],
-            // password hanya diwajibkan jika diisi
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
         if (!empty($validated['password'])) {
-            // Hash password baru jika diisi
             $validated['password'] = Hash::make($validated['password']);
         } else {
-            // Jika password kosong, hapus dari data yang divalidasi agar tidak menimpa password lama
             unset($validated['password']);
         }
 
