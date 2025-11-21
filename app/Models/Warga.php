@@ -49,4 +49,16 @@ class Warga extends Model
         }
         return $query;
     }
+    public function scopeSearch($query, $request, $searchableColumns)
+{
+    if ($request->filled('search')) {
+        $keyword = $request->search;
+        $query->where(function ($q) use ($searchableColumns, $keyword) {
+            foreach ($searchableColumns as $column) {
+                $q->orWhere($column, 'LIKE', "%{$keyword}%");
+            }
+        });
+    }
+    return $query;
+}
 }

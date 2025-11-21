@@ -49,10 +49,9 @@
                                 <i class="fas fa-exclamation-triangle me-1"></i> {{ session('error') }}
                             </div>
                         @endif
-                        {{-- === FILTER & SEARCH USER === --}}
+                        {{-- === SEARCH USER === --}}
                         <form method="GET" action="{{ route('users.index') }}" class="mb-4">
                             <div class="row g-3 align-items-center">
-
                                 {{-- Search Input --}}
                                 <div class="col-md-3">
                                     <div class="input-group">
@@ -64,7 +63,6 @@
                                         </button>
                                     </div>
                                 </div>
-
                                 {{-- Clear Button --}}
                                 <div class="col-md-2">
                                     @if (request('search'))
