@@ -61,4 +61,9 @@ class Warga extends Model
     }
     return $query;
 }
+public function riwayatStatusSurat()
+{
+    return $this->hasMany(RiwayatStatusSurat::class, 'petugas_warga_id', 'warga_id');
+}
+
 }

@@ -140,16 +140,16 @@
             {{-- START ABOUT SECTION --}}
             <section id="about" class="about-section py-5 bg-light text-center">
                 <div class="container">
-                    <h2 class="fw-bold mb-3">Tentang <span class="text-success">Bina Desa</span></h2>
+                    <h2 class="fw-bold mb-3">Tentang <span class="text-success">Layanan surat</span></h2>
                     <p class="lead mx-auto" style="max-width: 800px;">
-                        <strong>Bina Desa</strong> merupakan platform digital yang dirancang untuk mendukung
+                        <strong>Layanan Surat</strong> merupakan platform digital yang dirancang untuk mendukung
                         pengelolaan administrasi dan layanan masyarakat desa secara terpadu, cepat,
                         dan transparan. Melalui sistem ini, pemerintah desa dapat meningkatkan efisiensi
                         pelayanan publik seperti pengajuan surat, manajemen data warga, serta laporan kegiatan
                         pembangunan desa.
                     </p>
                     <p class="text-muted" style="max-width: 750px; margin: 0 auto;">
-                        Dengan semangat gotong royong dan inovasi teknologi, Bina Desa hadir
+                        Dengan semangat gotong royong dan inovasi teknologi, Layanan Surat hadir
                         untuk mendorong terwujudnya desa yang maju, mandiri, dan berdaya saing
                         di era digital.
                     </p>

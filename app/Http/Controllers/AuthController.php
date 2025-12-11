@@ -1,16 +1,24 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        // Jika sudah login, redirect ke dashboard
+        if (!Auth::check()) {
+            return redirect()->route('guest.dashboard');
+        }
+
+        // Jika belum login, arahkan ke halaman login
+        return redirect()->route('login.form');
+    }
     /**
-     * 🔹 Tampilkan halaman login (Guest)
+     * Menampilkan halaman login (Guest)
      */
     public function showLoginForm()
     {
@@ -18,67 +26,59 @@ class AuthController extends Controller
     }
 
     /**
-     * 🔹 Proses login dengan validasi email & password
+     * Proses login
      */
     public function login(Request $request)
     {
-        // 1️⃣ VALIDASI INPUT
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => [
-                'required',
-                'min:3',
-                'regex:/[A-Z]/', // Minimal 1 huruf kapital - Aturan ini tetap dipertahankan
-            ],
+        // VALIDASI INPUT
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|min:3',
         ], [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
             'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 3 karakter.',
-            'password.regex' => 'Password harus mengandung minimal satu huruf kapital.',
+            'password.min'      => 'Password minimal 3 karakter.',
         ]);
 
-        $email = $validated['email'];
-        $password = $validated['password'];
+        // DATA CREDENTIAL UNTUK AUTH
+        $credentials = $request->only('email', 'password');
 
-        $user = User::where('email', $email)->first();
+        // AUTHENTICATION
+        if (Auth::attempt($credentials)) {
 
-        // 2️⃣ LOGIKA VERIFIKASI STANDAR LARAVEL (TANPA KEWAJIBAN EMAIL = PASSWORD)
-        // Cek: 1. Apakah user ditemukan? DAN 2. Apakah password input cocok dengan hash di DB?
-        if ($user && Hash::check($password, $user->password)) {
-
-            // 3️⃣ LOGIN BERHASIL
-            // Pastikan Anda memanggil Auth::login($user) jika ingin menggunakan middleware 'auth' standar
-            // Jika Anda menggunakan sesi manual seperti di bawah, kode ini akan berfungsi:
+            // REGENERATE SESSION
             $request->session()->regenerate();
 
-            // SET SESSION MANUAL
+            // SET SESSION (sesuai modul)
             Session::put('isLoggedIn', true);
-            Session::put('user_email', $email);
-            Session::put('email', $email);
+            Session::put('user_email', Auth::user()->email);
+            Session::put('user_id', Auth::user()->id);
 
-            // 🔹 Ambil URL intended, jika ada
-            $redirectUrl = Session::pull('url.intended', route('guest.dashboard'));
-
-            return redirect($redirectUrl)
-                ->with('success', "Login berhasil! Selamat datang, {$email}.");
+            // REDIRECT KE DASHBOARD
+            return redirect()->route('guest.dashboard')
+                ->with('success', 'Login berhasil. Selamat datang!');
         }
 
-        // 4️⃣ LOGIN GAGAL
-        // Ganti pesan kesalahan menjadi standar
+        // LOGIN GAGAL
         return redirect()->route('login.form')
-            ->withErrors(['gagal' => 'Login gagal! Kredensial tidak cocok (Email atau Password salah).'])
+            ->withErrors(['gagal' => 'Email atau Password salah.'])
             ->withInput();
     }
 
     /**
-     * 🔹 Logout user
+     * Logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        // Sebaiknya gunakan Auth::logout() jika menggunakan Auth bawaan
+        Auth::logout();
+
+        // HAPUS SESSION
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         Session::flush();
+
         return redirect()->route('login.form')
-            ->with('success', 'Logout berhasil! Anda telah keluar dari sistem.');
+            ->with('success', 'Logout berhasil.');
     }
 }

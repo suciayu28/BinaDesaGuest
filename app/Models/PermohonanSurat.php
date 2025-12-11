@@ -2,20 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-
-// Hapus atau abaikan baris ini (mereka ada di namespace yang sama):
-// use App\Models\Warga;
-// use App\Models\JenisSurat;
-
-class PermohonanSurat extends Model implements HasMedia
+class PermohonanSurat extends Model
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory;
 
     protected $table = 'permohonan_surat';
     protected $primaryKey = 'permohonan_id';
@@ -30,33 +23,47 @@ class PermohonanSurat extends Model implements HasMedia
         'catatan',
     ];
 
-    /**
-     * Daftarkan koleksi media untuk lampiran permohonan.
-     */
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('permohonan_surat');
-    }
+    protected $casts = [
+        'tanggal_pengajuan' => 'datetime',
+    ];
 
-    /**
-     * Relasi BelongsTo ke Model JenisSurat.
-     */
     public function jenisSurat(): BelongsTo
     {
-        // Model JenisSurat dipanggil tanpa namespace karena berada di App\Models
         return $this->belongsTo(JenisSurat::class, 'jenis_id', 'jenis_id');
     }
 
-    /**
-     * Relasi BelongsTo ke Model Warga (sebagai pemohon).
-     */
     public function pemohon(): BelongsTo
     {
-        // Model Warga dipanggil tanpa namespace karena berada di App\Models
         return $this->belongsTo(Warga::class, 'pemohon_warga_id', 'warga_id');
     }
+
     public function warga()
     {
         return $this->belongsTo(Warga::class, 'pemohon_warga_id', 'warga_id');
     }
+
+    public function berkas()
+    {
+        return $this->hasMany(BerkasPersyaratan::class, 'permohonan_id');
+    }
+
+    /** =====================
+     *  RELASI MEDIA AMAN
+     *  ===================== */
+    public function lampiran()
+    {
+        return $this->hasMany(Media::class, 'ref_id', 'permohonan_id')
+                    ->where('ref_table', 'permohonan_surat')
+                    ->orderBy('sort_order');
+    }
+
+    public function riwayatStatus()
+    {
+        return $this->hasMany(
+            RiwayatStatusSurat::class,
+            'permohonan_id',
+            'permohonan_id'
+        )->orderBy('waktu', 'desc');
+    }
+    
 }

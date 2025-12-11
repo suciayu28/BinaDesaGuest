@@ -60,7 +60,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="tanggal_pengajuan" class="form-label">Tanggal Pengajuan <span
-                                                class="text-danger">*</span></label>
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" value="{{ date('d/m/Y') }}" readonly>
                                 </div>
                             </div>
@@ -70,10 +70,11 @@
                             </h6>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="pemohon_warga_id" class="form-label">Nama Pemohon (Pilih Warga) <span class="text-danger">*</span></label>
+                                    <label for="pemohon_warga_id" class="form-label">Nama Pemohon (Pilih Warga) <span
+                                            class="text-danger">*</span></label>
 
                                     <select name="pemohon_warga_id" id="pemohon_warga_id"
-                                            class="form-control @error('pemohon_warga_id') is-invalid @enderror" required>
+                                        class="form-control @error('pemohon_warga_id') is-invalid @enderror" required>
 
                                         <option value="" disabled selected>-- Pilih Warga --</option>
 
@@ -94,7 +95,7 @@
                                     <label for="nik_pemohon_info" class="form-label">NIK Pemohon</label>
                                     {{-- NIK hanya dijadikan display info karena data akan diambil di Controller --}}
                                     <input type="text" id="nik_pemohon_info" class="form-control"
-                                         value="NIK akan dicatat berdasarkan pilihan di samping." readonly>
+                                        value="NIK akan dicatat berdasarkan pilihan di samping." readonly>
                                 </div>
                             </div>
                             {{-- ============= END BAGIAN DATA PEMOHON ============= --}}
@@ -104,9 +105,8 @@
                             <h6 class="text-primary mb-3 mt-4 border-bottom pb-1">Tujuan dan Catatan</h6>
                             <div class="mb-3">
                                 <label for="catatan" class="form-label">Catatan Tambahan / Keperluan <span
-                                            class="text-danger">*</span></label>
-                                <textarea name="catatan" id="catatan" rows="3"
-                                    class="form-control @error('catatan') is-invalid @enderror"
+                                        class="text-danger">*</span></label>
+                                <textarea name="catatan" id="catatan" rows="3" class="form-control @error('catatan') is-invalid @enderror"
                                     placeholder="Jelaskan tujuan dan keperluan Anda mengajukan surat ini (Wajib diisi).">{{ old('catatan') }}</textarea>
                                 @error('catatan')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -114,33 +114,43 @@
                             </div>
 
                             {{-- ============= BAGIAN LAMPIRAN ============= --}}
+                            {{-- ============= BAGIAN LAMPIRAN ============= --}}
                             <h6 class="text-primary mb-3 mt-4 border-bottom pb-1">Lampiran Persyaratan</h6>
 
-                            {{-- DAFTAR SYARAT --}}
                             @if (isset($jenisSurat->syarat_json) && is_array($jenisSurat->syarat_json) && count($jenisSurat->syarat_json) > 0)
                                 <div class="mb-3 p-3 border rounded bg-light">
-                                    <p class="mb-2 small fw-bold text-dark">Daftar Persyaratan:</p>
+                                    <p class="mb-2 small fw-bold">Daftar Persyaratan:</p>
                                     <ul class="list-group list-group-flush small">
                                         @foreach ($jenisSurat->syarat_json as $syarat)
-                                            <li class="list-group-item bg-light py-1 ps-0"><i
-                                                     class="bi bi-dot me-1"></i>{{ $syarat }}</li>
+                                            <li class="list-group-item bg-light py-1 ps-0">
+                                                <i class="bi bi-dot me-1"></i>{{ $syarat }}
+                                            </li>
                                         @endforeach
                                     </ul>
                                 </div>
                             @endif
 
+
                             <div class="mb-3">
-                                <label for="lampiran" class="form-label">Unggah Lampiran (PDF/JPG/PNG, maks. 5MB)
-                                    <span class="text-danger">*</span></label>
-                                <input type="file" name="lampiran" id="lampiran"
-                                    class="form-control @error('lampiran') is-invalid @enderror"
-                                    accept=".pdf,.jpg,.jpeg,.png" required>
-                                <small class="form-text text-muted">Gabungkan semua berkas persyaratan (KTP, KK, dsb)
-                                    menjadi satu file.</small>
+                                <label for="lampiran" class="form-label">
+                                    Upload Lampiran (PDF/JPG/PNG, max 5MB / file) <span class="text-danger">*</span>
+                                </label>
+
+                                <input type="file" name="lampiran[]" class="form-control" multiple required
+                                    accept=".pdf,.jpg,.jpeg,.png">
+
                                 @error('lampiran')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                @error('lampiran.*')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+
+                                <small class="text-muted">
+                                    Unggah beberapa file sesuai persyaratan. Misal: KTP, KK, foto rumah, dan lain-lain.
+                                </small>
                             </div>
+
 
                             {{-- TOMBOL AKSI --}}
                             <div class="text-end pt-3">
