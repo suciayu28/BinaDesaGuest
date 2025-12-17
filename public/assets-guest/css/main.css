@@ -20,7 +20,7 @@
 }
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
-:root { 
+:root {
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #212529; /* Default color used for the majority of the text content across the entire website */
   --heading-color: #2d465e; /* Color for headings, subheadings and title throughout the website */
@@ -4719,6 +4719,7 @@ section,
   transition: 0.3s;
 }
 
+
 .tags-widget ul a:hover {
   background: var(--accent-color);
   color: var(--contrast-color);
@@ -4728,4 +4729,7 @@ section,
   padding-left: 5px;
   color: color-mix(in srgb, var(--default-color), transparent 60%);
   font-size: 14px;
+}
+#preloader {
+  display: none !important;
 }

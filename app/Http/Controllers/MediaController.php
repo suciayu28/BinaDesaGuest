@@ -16,26 +16,36 @@ class MediaController extends Controller
      */
     // Upload multiple file
     public function store(Request $request)
-    {
-        $request->validate([
-            'files.*' => 'required|file|max:10240', // max 10MB
-            'permohonan_id' => 'required|exists:permohonan_surat,permohonan_id',
+{
+    $request->validate([
+        'permohonan_id' => 'required',
+        'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
+
+    foreach ($request->file('files') as $index => $file) {
+
+        $filename = time().'_'.$file->getClientOriginalName();
+
+        // simpan file
+        $file->storeAs(
+            'public/permohonan/'.$request->permohonan_id,
+            $filename
+        );
+
+        // simpan metadata ke tabel media
+        Media::create([
+            'ref_table'  => 'permohonan_surat',   // 🔴 WAJIB
+            'ref_id'     => $request->permohonan_id, // 🔴 WAJIB
+            'file_name'  => $filename,
+            'mime_type'  => $file->getClientMimeType(),
+            'caption'    => null,
+            'sort_order' => $index + 1,
         ]);
-
-        foreach ($request->file('files') as $file) {
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/permohonan/'.$request->permohonan_id, $filename);
-
-            Media::create([
-                'permohonan_id' => $request->permohonan_id,
-                'file_name' => $filename,
-                'mime_type' => $file->getClientMimeType(),
-                'caption' => null
-            ]);
-        }
-
-        return back()->with('success', 'Lampiran berhasil diunggah.');
     }
+
+    return back()->with('success', 'Lampiran berhasil diunggah.');
+}
+
 
     // Hapus file
     public function destroy($id)

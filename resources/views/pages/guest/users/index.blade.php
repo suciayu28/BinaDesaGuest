@@ -107,7 +107,9 @@
                                                     @if (!empty($user->role))
                                                         <div class="user-detail-item">
                                                             <i class="fas fa-user-shield"></i>
-                                                            <span>Role: {{ ucfirst($user->role) }}</span>
+                                                            <span class="badge bg-info text-dark">
+                                                                {{ ucfirst(str_replace('_', ' ', $user->role)) }}
+                                                            </span>
                                                         </div>
                                                     @endif
 

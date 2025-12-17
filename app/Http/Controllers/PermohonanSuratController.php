@@ -1,16 +1,15 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Media;
-use App\Models\Warga;
+use App\Models\BerkasPersyaratan;
 use App\Models\JenisSurat;
-use Illuminate\Support\Str;
+use App\Models\Media;
+use App\Models\PermohonanSurat;
+use App\Models\RiwayatStatusSurat;
+use App\Models\Warga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\PermohonanSurat;
-use App\Models\BerkasPersyaratan;
-use App\Models\RiwayatStatusSurat;
+use Illuminate\Support\Str;
 
 class PermohonanSuratController extends Controller
 {
@@ -28,7 +27,9 @@ class PermohonanSuratController extends Controller
         $jenisSuratId = $request->query('jenis_surat_id');
         $jenisSurat   = $jenisSuratId ? JenisSurat::findOrFail($jenisSuratId) : null;
 
-        $listWarga = Warga::select('warga_id', 'nama', 'no_ktp')->orderBy('nama')->get();
+        $listWarga = Warga::select('warga_id', 'nama', 'no_ktp')
+            ->orderBy('nama')
+            ->get();
 
         return view('pages.guest.permohonan.create', compact('jenisSurat', 'listWarga'));
     }
@@ -44,7 +45,7 @@ class PermohonanSuratController extends Controller
         ]);
 
         try {
-            $jenisSurat = JenisSurat::find($request->jenis_id);
+            $jenisSurat = JenisSurat::findOrFail($request->jenis_id);
 
             $nomorPermohonan = date('Ymd') . '/' . ($jenisSurat->kode_jenis ?? 'UNK') . '/' . Str::random(6);
 
@@ -56,40 +57,45 @@ class PermohonanSuratController extends Controller
                 'status'            => 'Diajukan',
                 'catatan'           => $request->catatan,
             ]);
+            // ===================== AUTO CREATE BERKAS =====================
+            $syaratList = $jenisSurat->syarat_json;
 
-            // ============== UPLOAD LAMPIRAN ==============
+            if (is_array($syaratList)) {
+                foreach ($syaratList as $namaBerkas) {
+                    BerkasPersyaratan::create([
+                        'permohonan_id' => $permohonan->permohonan_id,
+                        'nama_berkas'   => $namaBerkas,
+                        'valid'         => 0,
+                    ]);
+                }
+            }
+
+            // ===================== FIX UTAMA =====================
             if ($request->hasFile('lampiran')) {
                 foreach ($request->file('lampiran') as $index => $file) {
 
                     $original = $file->getClientOriginalName();
                     $fileName = time() . "_{$index}_" . Str::random(6) . "." . $file->extension();
 
+                    // SIMPAN FILE
                     $path = $file->storeAs(
                         "permohonan/{$permohonan->permohonan_id}",
                         $fileName,
                         'public'
                     );
 
+                    // SIMPAN DB (FULL PATH)
                     Media::create([
                         'ref_table'  => 'permohonan_surat',
                         'ref_id'     => $permohonan->permohonan_id,
-                        'file_name'  => $path,
+                        'file_name'  => $path, // ✅ INI KUNCI
                         'caption'    => $original,
                         'mime_type'  => $file->getClientMimeType(),
                         'sort_order' => Media::where('ref_table', 'permohonan_surat')
-                                            ->where('ref_id', $permohonan->permohonan_id)
-                                            ->count() + 1,
+                            ->where('ref_id', $permohonan->permohonan_id)
+                            ->count() + 1,
                     ]);
                 }
-            }
-
-            // ============== GENERATE SYARAT BERKAS ==============
-            foreach ($jenisSurat->syarat_json ?? [] as $syarat) {
-                BerkasPersyaratan::create([
-                    'permohonan_id' => $permohonan->permohonan_id,
-                    'nama_berkas'   => $syarat,
-                    'valid'         => 0,
-                ]);
             }
 
             return redirect()->route('permohonan.index')
@@ -106,19 +112,18 @@ class PermohonanSuratController extends Controller
             'jenisSurat',
             'warga',
             'berkas.media',
-            'lampiran'   // RELASI BENAR
+            'lampiran',
         ])->findOrFail($id);
 
         return view('pages.guest.permohonan.show', compact('permohonan'));
     }
 
+    // ===================== FIX UPLOAD DETAIL =====================
     public function upload(Request $request, $permohonan_id)
     {
         $request->validate([
-            'files.*' => 'required|file|max:10240'
+            'files.*' => 'required|file|max:10240',
         ]);
-
-        $permohonan = PermohonanSurat::findOrFail($permohonan_id);
 
         foreach ($request->file('files') as $index => $file) {
 
@@ -134,7 +139,7 @@ class PermohonanSuratController extends Controller
             Media::create([
                 'ref_table'  => 'permohonan_surat',
                 'ref_id'     => $permohonan_id,
-                'file_name'  => $path,
+                'file_name'  => $path, // ✅ FIX
                 'mime_type'  => $file->getClientMimeType(),
                 'caption'    => $original,
                 'sort_order' => Media::where('ref_table', 'permohonan_surat')
@@ -158,4 +163,20 @@ class PermohonanSuratController extends Controller
 
         return redirect()->back()->with('success', 'File berhasil dihapus');
     }
+
+    public function approve(PermohonanSurat $permohonan)
+    {
+        $permohonan->update(['status' => 'diproses']);
+
+        RiwayatStatusSurat::create([
+            'permohonan_id'    => $permohonan->permohonan_id,
+            'status'           => 'diproses',
+            'petugas_warga_id' => auth()->user()->warga->warga_id ?? null,
+            'waktu'            => now(),
+            'keterangan'       => 'Permohonan sedang diproses',
+        ]);
+
+        return back()->with('success', 'Permohonan diproses.');
+    }
+
 }

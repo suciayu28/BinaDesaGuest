@@ -1,100 +1,124 @@
 @extends('layouts.guest.app')
 
 @section('content')
-<main class="main">
+    <main class="main">
 
-    {{-- ================= PAGE TITLE ================= --}}
-    <div class="page-title">
-        <div class="heading">
-            <div class="container text-center">
-                <h1>Daftar Berkas Persyaratan</h1>
-                <p>Kelola berkas persyaratan untuk permohonan surat.</p>
+        {{-- PAGE TITLE (JANGAN DIUBAH) --}}
+        <div class="page-title">
+            <div class="heading">
+                <div class="container text-center">
+                    <h1>Daftar Berkas Persyaratan</h1>
+                    <p>Kelola berkas persyaratan untuk setiap permohonan surat.</p>
+                </div>
             </div>
+
+            <nav class="breadcrumbs">
+                <div class="container">
+                    <ol>
+                        <li><a href="{{ route('guest.dashboard') }}">Dashboard</a></li>
+                        <li class="current">Berkas Persyaratan</li>
+                    </ol>
+                </div>
+            </nav>
         </div>
 
-        {{-- ================= BREADCRUMB ================= --}}
-        <nav class="breadcrumbs">
-            <div class="container">
-                <ol>
-                    <li><a href="{{ route('guest.dashboard') }}">Dashboard</a></li>
-                    <li class="current">Berkas Persyaratan</li>
-                </ol>
-            </div>
-        </nav>
-    </div>
+        {{-- CONTENT --}}
+        <section class="about section">
+            <div class="container" data-aos="fade-up">
+                <div class="row g-3">
 
-    {{-- ================= MAIN CONTENT ================= --}}
-    <section class="about section">
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
+                    @forelse ($permohonans as $permohonan)
+                        @php
+                            $badge = match (strtolower($permohonan->status)) {
+                                'selesai' => 'success',
+                                'diproses' => 'warning',
+                                'ditolak' => 'danger',
+                                default => 'secondary',
+                            };
+                        @endphp
 
-            @if($permohonan)
-                <div class="mb-4 text-center">
-                    <p><strong>Nomor Permohonan:</strong> {{ $permohonan->nomor }}</p>
-                    <a href="{{ route('berkas.create', $permohonan->id) }}"
-                       class="btn btn-primary">
-                        + Tambah Berkas
-                    </a>
-                </div>
-            @endif
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body p-3">
 
-            <div class="row g-3">
-                @forelse ($berkas as $item)
-                    <div class="col-md-4">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ $item->nama_berkas }}</h5>
+                                    {{-- HEADER --}}
+                                    <div class="fw-semibold mb-1">
+                                        {{ $permohonan->jenisSurat->nama_jenis }}
+                                    </div>
 
-                                <p>
-                                    @if($item->valid)
-                                        <span class="badge bg-success">Valid</span>
-                                    @else
-                                        <span class="badge bg-secondary">Belum Valid</span>
-                                    @endif
-                                </p>
+                                    <span class="badge bg-{{ $badge }} mb-2">
+                                        {{ ucfirst($permohonan->status) }}
+                                    </span>
 
-                                @php
-                                    // ambil media pertama (karena relasi hasMany)
-                                    $media = $item->media->first();
-                                @endphp
+                                    <hr class="my-2">
 
-                                @if($media)
-                                    <a href="{{ asset('storage/berkas_persyaratan/' . $media->file_name) }}"
-                                       target="_blank"
-                                       class="btn btn-sm btn-info mb-2">
-                                        Lihat File
+                                    {{-- INFO --}}
+                                    <div class="small mb-2">
+                                        <div><strong>No:</strong> {{ $permohonan->nomor_permohonan }}</div>
+                                        <div><strong>Pemohon:</strong> {{ $permohonan->warga->nama ?? '-' }}</div>
+                                    </div>
+
+                                    {{-- BERKAS --}}
+                                    <div class="small fw-semibold mb-1">Berkas:</div>
+                                    <ul class="list-unstyled small mb-3">
+                                        @forelse ($permohonan->berkas as $berkas)
+                                            <li class="d-flex justify-content-between align-items-center mb-1">
+                                                <span>
+                                                    <i class="bi bi-paperclip"></i>
+                                                    {{ $berkas->nama_berkas }}
+                                                </span>
+
+                                                <div class="d-flex gap-2">
+                                                    @php
+                                                        $media = $berkas->media->first();
+                                                    @endphp
+
+                                                    @if ($media)
+                                                        <a href="{{ Storage::url($media->file_name) }}" target="_blank"
+                                                            class="btn btn-outline-primary btn-sm">
+                                                            Lihat
+                                                        </a>
+                                                    @endif
+
+                                                    <a href="{{ route('berkas.edit', $berkas->berkas_id) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        Edit
+                                                    </a>
+
+                                                    <form action="{{ route('berkas.destroy', $berkas->berkas_id) }}"
+                                                        method="POST" onsubmit="return confirm('Hapus berkas ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn btn-danger btn-sm">
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        @empty
+                                            <li class="text-muted">Tidak ada berkas</li>
+                                        @endforelse
+                                    </ul>
+
+                                    {{-- DETAIL --}}
+                                    <a href="{{ route('permohonan.show', $permohonan->permohonan_id) }}"
+                                        class="btn btn-info btn-sm w-100 text-white">
+                                        Detail Permohonan
                                     </a>
-                                @else
-                                    <span class="text-muted mb-2 d-block">Tidak ada file</span>
-                                @endif
 
-                                <div class="mt-auto">
-                                    <a href="{{ route('berkas.edit', $item->berkas_id) }}"
-                                       class="btn btn-sm btn-warning me-2">Edit</a>
-
-                                    <form action="{{ route('berkas.destroy', $item->berkas_id) }}"
-                                          method="POST"
-                                          class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Hapus berkas ini?')">
-                                            Hapus
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @empty
-                    <div class="col-12 text-center text-muted">
-                        Belum ada berkas.
-                    </div>
-                @endforelse
+
+                    @empty
+                        <div class="col-12 text-center text-muted">
+                            Belum ada data berkas persyaratan.
+                        </div>
+                    @endforelse
+
+                </div>
             </div>
+        </section>
 
-        </div>
-    </section>
-
-</main>
+    </main>
 @endsection

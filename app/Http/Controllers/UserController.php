@@ -12,17 +12,15 @@ class UserController extends Controller
      * Tampilkan semua data user
      */
     public function index(Request $request)
-{
-
-    $searchableColumns = ['name', 'email'];
+    {
+        $searchableColumns = ['name', 'email'];
 
         $users = User::search($request, $searchableColumns)
             ->paginate(10)
             ->appends($request->query());
 
-
-    return view('pages.guest.users.index', compact('users'));
-}
+        return view('pages.guest.users.index', compact('users'));
+    }
 
     /**
      * Simpan user baru
@@ -30,20 +28,24 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed'
+            'name'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'role'     => 'required|in:super_admin,pelanggan,mitra',
         ]);
 
         $data = [
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'role'     => $request->role,
         ];
 
         User::create($data);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'User berhasil ditambahkan!');
     }
 
     /**
@@ -52,6 +54,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
+
         return view('pages.guest.users.edit', compact('user'));
     }
 
@@ -63,14 +66,16 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|min:6|confirmed'
+            'name'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|min:6|confirmed',
+            'role'     => 'required|in:super_admin,pelanggan,mitra',
         ]);
 
         $data = [
-            'name' => $request->name,
+            'name'  => $request->name,
             'email' => $request->email,
+            'role'  => $request->role,
         ];
 
         if ($request->filled('password')) {
@@ -79,7 +84,9 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'User berhasil diperbarui!');
     }
 
     /**
@@ -90,6 +97,8 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'User berhasil dihapus!');
     }
 }

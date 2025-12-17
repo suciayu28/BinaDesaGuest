@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function index()
     {
         // Jika sudah login, redirect ke dashboard
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('guest.dashboard');
         }
 
@@ -55,6 +55,8 @@ class AuthController extends Controller
             Session::put('user_email', Auth::user()->email);
             Session::put('user_id', Auth::user()->id);
 
+            // ✅ SIMPAN PESAN / WAKTU LOGIN TERAKHIR
+            session(['last_login' => now()]);
             // REDIRECT KE DASHBOARD
             return redirect()->route('guest.dashboard')
                 ->with('success', 'Login berhasil. Selamat datang!');

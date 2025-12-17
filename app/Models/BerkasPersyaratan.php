@@ -20,9 +20,9 @@ class BerkasPersyaratan extends Model
     }
 
     public function media()
-{
-    return $this->hasMany(Media::class, 'ref_id', 'berkas_id')
-        ->where('ref_table', 'berkas_persyaratan')
-        ->orderBy('sort_order');
-}
+    {
+        return $this->hasMany(Media::class, 'ref_id', 'berkas_id')
+            ->where('ref_table', 'berkas_persyaratan')
+            ->orderBy('sort_order');
+    }
 }

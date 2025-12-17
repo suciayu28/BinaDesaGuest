@@ -2,78 +2,133 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\GuestController;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\WargaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisSuratController;
-use App\Http\Controllers\MultipleuploadsController;
 use App\Http\Controllers\PermohonanSuratController;
 use App\Http\Controllers\BerkasPersyaratanController;
 use App\Http\Controllers\RiwayatStatusSuratController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WargaController;
 
-// ===================================================================
-// 1. ROUTE AUTHENTICATION (Guest Only)
-// ===================================================================
-Route::get('/', [AuthController::class, 'showLoginForm'])
-    ->name('login.form')
-    ->middleware('guest');
-
-Route::post('/', [AuthController::class, 'login'])
-    ->name('login.process')
-    ->middleware('guest');
-// ===================================================================
-//  HALAMAN DASHBOARD (boleh dilihat tanpa login)
-// ===================================================================
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])
+/*
+|--------------------------------------------------------------------------
+| PUBLIC (TANPA LOGIN)
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [DashboardController::class, 'dashboard'])
     ->name('guest.dashboard');
 
-// ===================================================================
-// 2. ROUTE YANG HARUS LOGIN
-// ===================================================================
-Route::group(['middleware'=>['checkislogin']],function() {
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
+Route::get('/login', [AuthController::class, 'showLoginForm'])
+    ->name('login.form');
 
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.process');
 
-    // JENIS SURAT
+/*
+|--------------------------------------------------------------------------
+| WAJIB LOGIN (PELAGGAN + ADMIN)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('checkislogin')->group(function () {
+
+    /*
+    |--------------------
+    | JENIS SURAT
+    |--------------------
+    */
     Route::get('/jenis-surat', [JenisSuratController::class, 'index'])
         ->name('jenis-surat.index');
 
-    // PERMOHONAN SURAT
+    /*
+    |--------------------
+    | PERMOHONAN SURAT
+    |--------------------
+    */
     Route::resource('permohonan', PermohonanSuratController::class);
 
-    Route::get('/permohonan/riwayat', [PermohonanSuratController::class, 'riwayat'])
-        ->name('permohonan.riwayat');
+    // Upload file permohonan
+    Route::post(
+        '/permohonan/{permohonan_id}/upload',
+        [PermohonanSuratController::class, 'upload']
+    )->name('permohonan.upload');
 
-    // DATA WARGA
-    Route::resource('warga', WargaController::class);
+    // Hapus file permohonan
+    Route::delete(
+        '/permohonan/file/{media}',
+        [MediaController::class, 'destroy']
+    )->name('permohonan.file.destroy');
 
-    // DATA USER
+    /*
+    |--------------------
+    | BERKAS PERSYARATAN
+    |--------------------
+    */
+    Route::resource('berkas', BerkasPersyaratanController::class);
+
+    /*
+    |--------------------
+    | RIWAYAT STATUS
+    |--------------------
+    */
+    Route::get(
+        '/riwayat/{permohonan_id}',
+        [RiwayatStatusSuratController::class, 'index']
+    )->name('riwayat-status.index');
+
+    /*
+    |--------------------
+    | LOGOUT
+    |--------------------
+    */
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
+});
+
+/*
+|--------------------------------------------------------------------------
+| KHUSUS SUPER ADMIN
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['checkislogin', 'checkrole:super_admin'])->group(function () {
+
+    /*
+    |--------------------
+    | APPROVE PERMOHONAN
+    |--------------------
+    */
+    Route::post(
+        '/permohonan/{permohonan}/approve',
+        [PermohonanSuratController::class, 'approve']
+    )->name('permohonan.approve');
+
+    /*
+    |--------------------
+    | KELOLA USER
+    |--------------------
+    */
     Route::resource('users', UserController::class);
 
-    // BERKAS PERSYARATAN
-    Route::resource('berkas', BerkasPersyaratanController::class);
-    Route::get('/berkas/permohonan/{permohonan_id}',
-    [BerkasPersyaratanController::class, 'index']
-)->name('berkas.bypermohonan');
-//riwayat status surat
-Route::get('/riwayat/{permohonan_id}', [RiwayatStatusSuratController::class, 'index'])
-    ->name('riwayat-status.index');
-    Route::post('/permohonan/{permohonan}/approve', [PermohonanSuratController::class, 'approve'])
-    ->name('permohonan.approve');
-
+    /*
+    |--------------------
+    | KELOLA WARGA
+    |--------------------
+    */
+    Route::resource('warga', WargaController::class);
 });
-// ===================================================================
-// LOGOUT (hanya untuk yang login)
-// ===================================================================
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout')
-    ->middleware('auth');
 
+/*
+|--------------------------------------------------------------------------
+| UPLOAD UMUM (OPSIONAL)
+|--------------------------------------------------------------------------
+*/
+Route::post('/uploads', [MediaController::class, 'store'])
+    ->name('uploads.store');
 
-
-// Route baru: hapus file upload
-Route::post('/uploads', [MediaController::class, 'store'])->name('uploads.store');
-Route::delete('/uploads/{id}', [MediaController::class, 'destroy'])->name('uploads.destroy');
-
-
+Route::delete('/uploads/{id}', [MediaController::class, 'destroy'])
+    ->name('uploads.destroy');

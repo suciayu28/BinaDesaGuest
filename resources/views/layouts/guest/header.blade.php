@@ -11,7 +11,7 @@
     {{-- Navigasi Tengah --}}
     @auth
         <nav id="navmenu" class="navmenu flex-grow-1" style="text-align: center;">
-            <ul style="display: inline-flex; gap: 45px; margin: 0; padding: 0; list-style: none;">
+            <ul style="display: inline-flex; gap: 20px; margin: 0; padding: 0; list-style: none;">
                 <li><a href="{{ route('guest.dashboard') }}"><i class="fa-solid fa-house me-1"></i> Home</a></li>
                 <li><a href="{{ route('jenis-surat.index') }}"><i class="fa-solid fa-file-lines me-1"></i> Jenis Surat</a>
                 </li>
@@ -19,7 +19,6 @@
                         Surat</a></li>
                 <li><a href="{{ route('berkas.index') }}"><i class="fa-solid fa-folder-open me-1"></i> Berkas
                         Persyaratan</a></li>
-                <li><a href="#"><i class="fa-solid fa-clipboard-check me-1"></i> Riwayat Status Surat</a></li>
                 <li><a href="{{ route('users.index') }}"><i class="fa-solid fa-users me-1"></i> Data User</a></li>
                 <li><a href="{{ route('warga.index') }}"><i class="fa-solid fa-id-card me-1"></i> Data Warga</a></li>
             </ul>
@@ -29,15 +28,29 @@
 
     {{-- Area Login/Logout Kanan --}}
     <div class="header-social-links d-flex align-items-center" style="gap: 15px;">
-        <a href="#" class="twitter"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="#" class="facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="instagram"><i class="fa-brands fa-instagram"></i></a>
+        <!-- Instagram -->
+                    <a href="https://www.instagram.com/ssuciayuu?igsh=MTQ0bG05MGhxb2o1aQ%3D%3D&utm_source=qr"
+                       class="text-danger fs-4" target="_blank">
+                        <i class="bi bi-instagram"></i>
+                    </a>
 
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/in/suci-dwimas-ayu-080006388/"
+                       class="text-primary fs-4" target="_blank">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+
+                    <!-- GitHub -->
+                    <a href="https://github.com/suciayu28/BinaDesaGuest.git"
+                       class="text-dark fs-4" target="_blank">
+                        <i class="bi bi-github"></i>
+                    </a>
         @if (Auth::check())
             @php
                 $user = Auth::user();
                 // Jika ada foto, load. Jika tidak → fallback ke default-avatar.png
                 $avatar = $user->avatar ?? 'default-avatar.png';
+                $lastLogin = session('last_login');
             @endphp
 
             <div class="dropdown ms-3">
@@ -53,14 +66,29 @@
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    {{-- Last Login --}}
+                    @if ($lastLogin)
+                        <li class="dropdown-item text-muted small">
+                            <i class="fa-regular fa-clock me-2"></i>
+                            Login terakhir:
+                            <br>
+                            <strong>{{ \Carbon\Carbon::parse($lastLogin)->translatedFormat('d F Y H:i') }}</strong>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                    @endif
+
+                    {{-- Logout --}}
                     <li>
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                        <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="dropdown-item text-danger">
                                 <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
                             </button>
                         </form>
                     </li>
+
                 </ul>
             </div>
         @else

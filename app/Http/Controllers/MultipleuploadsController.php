@@ -4,78 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\Media;
 use Illuminate\Http\Request;
-use App\Models\Multipleuploads;
 use Illuminate\Support\Facades\Storage;
 
 class MultipleuploadsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Upload lampiran permohonan (MULTI FILE)
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'permohonan_id' => 'required',
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
+
+        foreach ($request->file('files') as $index => $file) {
+
+            $filename = time().'_'.$file->getClientOriginalName();
+
+            // Simpan file ke storage
+            $file->storeAs(
+                'public/permohonan/'.$request->permohonan_id,
+                $filename
+            );
+
+            // Simpan metadata ke database (tabel media)
+            Media::create([
+                'ref_table'  => 'permohonan_surat',
+                'ref_id'     => $request->permohonan_id,
+                'file_name'  => $filename,
+                'file_type'  => $file->getClientMimeType(),
+                'sort_order' => $index + 1,
+            ]);
+        }
+
+        return back()->with('success', 'Lampiran berhasil diunggah.');
     }
 
     /**
-     * Display the specified resource.
+     * Hapus lampiran
      */
-    public function show(Multipleuploads $multipleuploads)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Multipleuploads $multipleuploads)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Multipleuploads $multipleuploads)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    // Hapus file
     public function destroy($id)
     {
         $media = Media::findOrFail($id);
 
-        // Path file fisik
-        $path = 'public/permohonan/'.$media->permohonan_id.'/'.$media->file_name;
+        $path = 'public/permohonan/'.$media->ref_id.'/'.$media->file_name;
 
-        // Hapus file fisik
         if (Storage::exists($path)) {
             Storage::delete($path);
         }
 
-        // Hapus record di database
         $media->delete();
 
-        return redirect()->back()->with('success', 'Lampiran berhasil dihapus.');
+        return back()->with('success', 'Lampiran berhasil dihapus.');
     }
 }

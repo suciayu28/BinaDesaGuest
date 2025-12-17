@@ -173,22 +173,36 @@
                         <i class="bi bi-paperclip me-2"></i> Lampiran Permohonan
                     </h5>
 
-                    @if (!$permohonan->media || $permohonan->media->count() == 0)
-                        <div class="alert alert-warning">Belum ada lampiran yang diunggah.</div>
+                    @php
+                        $lampiran = $permohonan->lampiran()->get();
+                    @endphp
+
+  
+
+                    @if ($lampiran->count() === 0)
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center h-100">
+                                    <img src="{{ asset('assets-guest/img/placeholder/no-file.png') }}"
+                                        class="img-fluid mb-2" style="max-height:150px;object-fit:contain;opacity:.7">
+                                    <div class="text-muted small">
+                                        Belum ada lampiran yang diunggah
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @else
                         <div class="row g-3 mb-4">
-                            @foreach ($permohonan->media as $m)
+                            @foreach ($lampiran as $m)
                                 <div class="col-md-4">
-                                    <div class="p-2 border rounded bg-light h-100">
+                                    <div class="p-2 border rounded bg-light h-100 d-flex flex-column">
 
-                                        {{-- Preview --}}
                                         @if (Str::startsWith($m->mime_type, 'image'))
                                             <img src="{{ Storage::url($m->file_name) }}" class="img-fluid rounded mb-2"
                                                 style="max-height:150px;object-fit:contain;">
                                         @else
-                                            <div class="text-center text-muted mb-2">
-                                                <i class="bi bi-file-earmark fs-1"></i>
-                                            </div>
+                                            <img src="{{ asset('assets-guest/img/placeholder/file.png') }}"
+                                                class="img-fluid mb-2" style="max-height:150px;object-fit:contain;">
                                         @endif
 
                                         <div class="small text-truncate mb-2">
@@ -215,13 +229,15 @@
                         </div>
                     @endif
 
+
                     {{-- ========================== UPLOAD LAMPIRAN BARU ============================= --}}
                     <div class="border rounded p-3 bg-light shadow-sm mt-4">
                         <h6 class="mb-3">
                             <i class="bi bi-upload me-2"></i> Upload Lampiran Baru (Multi File)
                         </h6>
 
-                        <form action="{{ route('uploads.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('permohonan.upload', $permohonan->permohonan_id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="permohonan_id" value="{{ $permohonan->permohonan_id }}">
 

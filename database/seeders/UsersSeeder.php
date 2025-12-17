@@ -14,7 +14,7 @@ class UsersSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         // generate 10 user contoh (boleh ubah angka)
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             User::create([
                 'name'      => $faker->name(),
                 'email'     => $faker->unique()->safeEmail(),
