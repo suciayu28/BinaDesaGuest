@@ -76,20 +76,19 @@
                                             <label class="form-label">Role</label>
                                             <select name="role" class="form-control" required>
                                                 <option value="">-- Pilih Role --</option>
-                                                <option value="super_admin"
-                                                    {{ old('role', $user->role) == 'super_admin' ? 'selected' : '' }}>
-                                                    Super Admin
+
+                                                <option value="admin"
+                                                    {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>
+                                                    Admin
                                                 </option>
+
                                                 <option value="pelanggan"
                                                     {{ old('role', $user->role) == 'pelanggan' ? 'selected' : '' }}>
                                                     Pelanggan
                                                 </option>
-                                                <option value="mitra"
-                                                    {{ old('role', $user->role) == 'mitra' ? 'selected' : '' }}>
-                                                    Mitra
-                                                </option>
                                             </select>
                                         </div>
+
                                     </div>
 
 
