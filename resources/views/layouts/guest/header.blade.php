@@ -35,7 +35,7 @@
                     </a>
 
                     <!-- LinkedIn -->
-                    <a href="https://www.linkedin.com/in/suci-dwimas-ayu-080006388/"
+                    <a href="https://www.linkedin.com/in/suci-ayu-3728a2394/"
                        class="text-primary fs-4" target="_blank">
                         <i class="bi bi-linkedin"></i>
                     </a>
