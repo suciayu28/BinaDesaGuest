@@ -95,7 +95,7 @@ Route::middleware('checkislogin')->group(function () {
 | KHUSUS SUPER ADMIN
 |--------------------------------------------------------------------------
 */
-Route::middleware(['checkislogin', 'checkrole:super_admin'])->group(function () {
+Route::middleware(['checkislogin', 'checkrole:admin'])->group(function () {
 
     /*
     |--------------------
