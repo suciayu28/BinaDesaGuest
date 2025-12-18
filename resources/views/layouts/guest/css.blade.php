@@ -32,15 +32,77 @@
 
 {{-- INLINE STYLE --}}
 <style>
+    /* ===============================
+       HEADER & LOGO (FIX FINAL)
+       =============================== */
+
+    /* HEADER UTAMA */
+    #header {
+        min-height: 130px;
+        /* KUNCI agar logo bisa besar */
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* WRAPPER LOGO */
+    #header .navbar-logo-wrapper {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    /* ANCHOR LOGO */
+    #header .logo {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    /* GAMBAR LOGO */
+    #header .logo img {
+        height: 45px;
+        /* tetap kecil secara layout */
+        width: auto;
+        transform: scale(1.5);
+        /* kelihatan besar */
+        transform-origin: left center;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25));
+    }
+
+
+    /* MATIKAN LIMIT TEMPLATE / BOOTSTRAP */
+    .navbar-brand img,
+    .logo img {
+        max-height: none !important;
+    }
+
+    /* ===============================
+       HEADER SOCIAL LINKS
+       =============================== */
     .header-social-links a {
         margin-left: 15px;
     }
 
+    /* ===============================
+       FOOTER SOCIAL LINKS
+       =============================== */
     .footer .social-links a {
         margin-right: 15px;
     }
 
-    /* Custom Hero for better visibility */
+    /* ===============================
+       FORM & BUTTON
+       =============================== */
+    .form-control,
+    .form-select,
+    .btn {
+        height: 45px;
+    }
+
+    /* ===============================
+       BLOG HERO
+       =============================== */
     .blog-hero-content {
         background: rgba(0, 0, 0, 0.4);
         padding: 20px;
@@ -52,13 +114,23 @@
         color: white !important;
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
     }
-    .form-control,
-    .form-select,
-    .btn {
-        height: 45px;
-    }
 
+    /* ===============================
+       RESPONSIVE (MOBILE)
+       =============================== */
+    @media (max-width: 991px) {
+        #header {
+            min-height: 90px;
+            padding: 10px 20px;
+        }
+
+        #header .logo img {
+            height: 65px !important;
+        }
+    }
 </style>
+
+
 {{-- Floating WhatsApp Button --}}
 <a href="https://wa.me/08877573317?text=Halo%20Admin,%20saya%20butuh%20bantuan." class="whatsapp-float" target="_blank"
     title="Chat via WhatsApp">
@@ -90,6 +162,4 @@
         background-color: #20ba5a;
         transform: scale(1.1);
     }
-
 </style>
-

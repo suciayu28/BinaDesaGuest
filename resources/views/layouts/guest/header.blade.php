@@ -1,12 +1,13 @@
-<header id="header" class="header d-flex align-items-center justify-content-between position-relative"
-    style="background-color: #7493e3; padding: 20px 30px; font-size: 1.1rem;">
+<header id="header"
+    class="header d-flex align-items-center justify-content-between position-relative"
+    style="background-color: white; padding: 20px 30px; font-size: 1.1rem; min-height:120px;">
 
-    {{-- Logo Vertikal Kiri --}}
-    <a href="{{ route('guest.dashboard') }}" class="logo d-flex flex-column align-items-center">
-        <img src="{{ asset('assets-guest/img/logo/logo.png') }}" alt="Logo Layanan Surat"
-            style="height: 150px; width: auto; margin-bottom: 5px;">
-        <span class="m-0" style="font-size: 1.6rem; font-weight: 700; color: #fff;">LAYANAN SURAT</span>
-    </a>
+
+    <div class="navbar-logo-wrapper">
+        <a href="{{ route('guest.dashboard') }}" class="logo">
+            <img src="{{ asset('assets-guest/img/logo/logo.png') }}" alt="Logo Layanan Surat" class="navbar-logo">
+        </a>
+    </div>
 
     {{-- Navigasi Tengah --}}
     @auth
@@ -29,22 +30,20 @@
     {{-- Area Login/Logout Kanan --}}
     <div class="header-social-links d-flex align-items-center" style="gap: 15px;">
         <!-- Instagram -->
-                    <a href="https://www.instagram.com/ssuciayuu?igsh=MTQ0bG05MGhxb2o1aQ%3D%3D&utm_source=qr"
-                       class="text-danger fs-4" target="_blank">
-                        <i class="bi bi-instagram"></i>
-                    </a>
+        <a href="https://www.instagram.com/ssuciayuu?igsh=MTQ0bG05MGhxb2o1aQ%3D%3D&utm_source=qr"
+            class="text-danger fs-4" target="_blank">
+            <i class="bi bi-instagram"></i>
+        </a>
 
-                    <!-- LinkedIn -->
-                    <a href="https://www.linkedin.com/in/suci-ayu-3728a2394/"
-                       class="text-primary fs-4" target="_blank">
-                        <i class="bi bi-linkedin"></i>
-                    </a>
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/in/suci-ayu-3728a2394/" class="text-primary fs-4" target="_blank">
+            <i class="bi bi-linkedin"></i>
+        </a>
 
-                    <!-- GitHub -->
-                    <a href="https://github.com/suciayu28/BinaDesaGuest.git"
-                       class="text-dark fs-4" target="_blank">
-                        <i class="bi bi-github"></i>
-                    </a>
+        <!-- GitHub -->
+        <a href="https://github.com/suciayu28/BinaDesaGuest.git" class="text-dark fs-4" target="_blank">
+            <i class="bi bi-github"></i>
+        </a>
         @if (Auth::check())
             @php
                 $user = Auth::user();
