@@ -1,9 +1,4 @@
 @extends('layouts.guest.app')
-
-@php
-    use Illuminate\Support\Str;
-@endphp
-
 @section('content')
     <main class="main">
 

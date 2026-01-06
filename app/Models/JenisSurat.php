@@ -16,7 +16,7 @@ class JenisSurat extends Model
     protected $table = 'jenis_surat';
 
     // Tentukan kolom yang bisa diisi
-    protected $fillable = ['kode', 'nama_jenis', 'syarat_json'];
+    protected $fillable = ['kode', 'nama_jenis','syarat_json'];
 
     /**
      * PENTING: Lakukan Attribute Casting untuk kolom JSON.

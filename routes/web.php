@@ -96,6 +96,20 @@ Route::middleware('checkislogin')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['checkislogin', 'checkrole:admin'])->group(function () {
+/*
+    |--------------------
+    | JENIS SURAT (ADMIN CRUD)
+    |--------------------
+    */
+    Route::prefix('jenis-surat')->name('jenis-surat.')->group(function () {
+        Route::get('/create', [JenisSuratController::class, 'create'])->name('create');
+        Route::post('/', [JenisSuratController::class, 'store'])->name('store');
+
+        Route::get('/{id}/edit', [JenisSuratController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [JenisSuratController::class, 'update'])->name('update');
+
+        Route::delete('/{id}', [JenisSuratController::class, 'destroy'])->name('destroy');
+    });
 
     /*
     |--------------------

@@ -36,6 +36,11 @@
                             <a href="{{ route('guest.dashboard') }}" class="btn btn-primary btn-sm">
                                 <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Dashboard
                             </a>
+                            @if (auth()->user()->role === 'admin')
+                                <a href="{{ route('jenis-surat.create') }}" class="btn btn-success btn-sm">
+                                    <i class="bi bi-plus-circle me-1"></i> Tambah Jenis Surat
+                                </a>
+                            @endif
                         </div>
 
 
@@ -60,27 +65,46 @@
                                                             {{ $surat->kode }}</span>
                                                     @endif
                                                     <h4 class="card-title mt-1 mb-2">{{ $surat->nama_jenis }}</h4>
-                                                    <p class="card-text text-muted small mb-4">
-                                                        {{ $surat->deskripsi ?? 'Deskripsi belum tersedia.' }}</p>
 
-                                                    <div class="mt-2">
-                                                        {{-- Tombol Ajukan Permohonan --}}
+
+
+                                                    <div class="mt-2 d-flex flex-wrap gap-2">
+                                                        {{-- User (non-admin) --}}
                                                         @if (auth()->user()->role !== 'admin')
                                                             <a href="{{ route('permohonan.create', ['jenis_surat_id' => $surat->jenis_id]) }}"
-                                                                class="btn btn-sm btn-primary me-2 shadow-sm rounded-pill px-3">
+                                                                class="btn btn-sm btn-primary shadow-sm rounded-pill px-3">
                                                                 <i class="bi bi-box-arrow-in-right me-1"></i> Ajukan
                                                                 Permohonan
                                                             </a>
                                                         @endif
 
-
-                                                        {{-- Tombol Lihat Syarat --}}
+                                                        {{-- Lihat Syarat (semua role) --}}
                                                         <a href="#"
                                                             class="btn btn-sm btn-outline-secondary rounded-pill px-3"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#syaratModal{{ $surat->jenis_id }}">
                                                             <i class="bi bi-card-checklist me-1"></i> Lihat Syarat
                                                         </a>
+
+                                                        {{-- Admin actions --}}
+                                                        @if (auth()->user()->role === 'admin')
+                                                            <a href="{{ route('jenis-surat.edit', $surat->jenis_id) }}"
+                                                                class="btn btn-sm btn-warning rounded-pill px-3">
+                                                                <i class="bi bi-pencil-square me-1"></i> Edit
+                                                            </a>
+
+                                                            <form
+                                                                action="{{ route('jenis-surat.destroy', $surat->jenis_id) }}"
+                                                                method="POST" class="d-inline"
+                                                                onsubmit="return confirm('Yakin mau hapus jenis surat ini?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-danger rounded-pill px-3">
+                                                                    <i class="bi bi-trash me-1"></i> Hapus
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>

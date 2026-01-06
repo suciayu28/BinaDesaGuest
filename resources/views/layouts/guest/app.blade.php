@@ -14,7 +14,7 @@
     {{-- START MAIN CONTENT --}}
 @yield('content')
     {{-- END MAIN CONTENT --}}
-
+@stack('scripts')
     {{-- START FOOTER --}}
 @include('layouts.guest.footer')
     {{-- END FOOTER --}}
