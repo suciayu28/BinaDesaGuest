@@ -79,19 +79,22 @@
                                                             Lihat
                                                         </a>
                                                     @endif
+                                                    @if (auth()->user()->role !== 'admin')
+                                                        <a href="{{ route('berkas.edit', $berkas->berkas_id) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            Edit
+                                                        </a>
 
-                                                    <a href="{{ route('berkas.edit', $berkas->berkas_id) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        Edit
-                                                    </a>
+                                                        <form action="{{ route('berkas.destroy', $berkas->berkas_id) }}"
+                                                            method="POST" onsubmit="return confirm('Hapus berkas ini?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-danger btn-sm">
+                                                                Hapus
+                                                            </button>
+                                                        </form>
+                                                    @endif
 
-                                                    <form action="{{ route('berkas.destroy', $berkas->berkas_id) }}"
-                                                        method="POST" onsubmit="return confirm('Hapus berkas ini?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-danger btn-sm">
-                                                            Hapus
-                                                        </button>
                                                     </form>
                                                 </div>
                                             </li>

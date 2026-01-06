@@ -177,7 +177,7 @@
                         $lampiran = $permohonan->lampiran()->get();
                     @endphp
 
-  
+
 
                     @if ($lampiran->count() === 0)
                         <div class="row">
@@ -261,10 +261,13 @@
                         @if (strtolower($permohonan->status) == 'diajukan')
                             <form action="{{ route('permohonan.approve', $permohonan->permohonan_id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-success"
-                                    onclick="return confirm('Setujui permohonan ini?')">
-                                    <i class="bi bi-check-circle me-1"></i> Setujui Permohonan
-                                </button>
+                                @if (auth()->user()->role === 'admin')
+                                    <button type="submit" class="btn btn-success"
+                                        onclick="return confirm('Setujui permohonan ini?')">
+                                        <i class="bi bi-check-circle me-1"></i> Setujui Permohonan
+                                    </button>
+                                @endif
+
                             </form>
                         @endif
                     @endauth
