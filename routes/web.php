@@ -146,3 +146,11 @@ Route::post('/uploads', [MediaController::class, 'store'])
 
 Route::delete('/uploads/{id}', [MediaController::class, 'destroy'])
     ->name('uploads.destroy');
+
+Route::get('/3/{BilanganPrima}', function ($BilanganPrima) {
+    return 'ini adalah: '.$BilanganPrima;
+});
+Route::get('/56/{BukanBilanganPrima}', function ($BilanganPrima) {
+    return 'ini bukan termasuk '.$BilanganPrima;
+});
+
